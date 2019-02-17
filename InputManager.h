@@ -19,11 +19,8 @@ class InputManager {
   public:
 
     void init(AxeSystem& axe);
-
     bool update();
-
     void setControlScheme(ControlSchemeType scheme) { _schemeType = scheme; }
-
     void nextControlScheme();
 
   private:

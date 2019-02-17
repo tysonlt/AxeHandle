@@ -37,8 +37,8 @@ class Screen {
 
 		void printEffects(AxePreset preset);
     void checkBooted();
-		ScreenPoint getElementPosition(ElementPosition pos);
-    FontSize getElementFontSize(ElementPosition pos);
+		ScreenPoint POS(ElementPosition pos);
+    FontSize FONT(ElementPosition pos);
 		void drawLine(ScreenPoint p, Colour colour);
 		void fillRect(ScreenPoint from, ScreenPoint to, Colour colour);
 
@@ -76,6 +76,7 @@ class Screen {
     const static Colour COLOUR_TITLE       = YELLOW;
     const static Colour COLOUR_SCENE       = CYAN;
     const static Colour COLOUR_FOOTER      = MAGENTA;
+    const static Colour COLOUR_EFFECT      = RED;
     const static Colour COLOUR_ERROR       = RED;
 
     //dimensions of printable areas
