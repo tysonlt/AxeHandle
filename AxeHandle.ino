@@ -10,21 +10,21 @@ void setup() {
 
   Serial.begin(115200);
   
-  axe.begin(Serial1);
   screen.init();
-  // input.init(axe);
+  axe.begin(Serial1);
+  input.init(axe);
   
   axe.registerPresetChangeCallback(onPresetChange);
   axe.registerSystemChangeCallback(onSystemChange);
   
-  axe.enableRefresh(1000);
+  axe.enableRefresh(500);
   axe.requestPresetDetails();
   axe.requestTempo();
 
 }
 
 void loop() {
-  // input.update();
+  input.update();
   axe.update();
 }
 
