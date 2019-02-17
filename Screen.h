@@ -36,7 +36,7 @@ class Screen {
   private:
 
 		void printEffects(AxePreset preset);
-
+    void checkBooted();
 		ScreenPoint getElementPosition(ElementPosition pos);
     FontSize getElementFontSize(ElementPosition pos);
 		void drawLine(ScreenPoint p, Colour colour);
@@ -97,6 +97,7 @@ class Screen {
 		const static displayOption_t OPTION_WRAP		= 1<<1;
 		const static displayOption_t OPTION_BORDER	= 1<<2;
 
+    bool _booting = false;
     MCUFRIEND_kbv _tft;
 		AxePreset _lastPreset;
 

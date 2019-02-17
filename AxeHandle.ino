@@ -16,7 +16,6 @@ void setup() {
   
   axe.registerPresetChangeCallback(onPresetChange);
   axe.registerSystemChangeCallback(onSystemChange);
-  
   axe.enableRefresh(500);
   axe.requestPresetDetails();
   axe.requestTempo();

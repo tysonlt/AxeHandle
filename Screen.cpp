@@ -11,7 +11,10 @@ void Screen::clearScreen() {
 }
 
 void Screen::printTempo(Tempo tempo) {
+
 	char buf[50];
+
+  checkBooted();
 	snprintf(buf, getMaxCharsPerLine() + 1, "TEMPO: %d BPM   ", tempo);
 	printText(buf, getElementPosition(FOOTER), getElementFontSize(FOOTER), COLOUR_FOOTER);
 	drawLine(getElementPosition(FOOTER_LINE), COLOUR_FOOTER);
@@ -21,6 +24,7 @@ void Screen::printPreset(AxePreset preset) {
 
   char buf[40];
 
+  checkBooted();
   drawLine(getElementPosition(HEADER_LINE), COLOUR_PRESET_NUM);
 
   if (isPresetChanged(preset)) {
@@ -42,18 +46,6 @@ void Screen::printPreset(AxePreset preset) {
   }
 
   _lastPreset = preset;
-
-}
-
-bool Screen::isPresetChanged(AxePreset preset) {
-  return preset.getPresetNumber() != _lastPreset.getPresetNumber();
-}
-
-bool Screen::isSceneChanged(AxePreset preset) {
-  return isPresetChanged(preset) || preset.getSceneNumber() != _lastPreset.getSceneNumber();
-}
-
-void Screen::printFirmwareVersion(Version version) {
 
 }
 
@@ -90,8 +82,29 @@ void Screen::printEffects(AxePreset preset) {
 	
 }
 
+void Screen::checkBooted() {
+  if (_booting) {
+    _booting = false;
+    clearScreen();
+  }
+}
+
+bool Screen::isPresetChanged(AxePreset preset) {
+  return preset.getPresetNumber() != _lastPreset.getPresetNumber();
+}
+
+bool Screen::isSceneChanged(AxePreset preset) {
+  return isPresetChanged(preset) || preset.getSceneNumber() != _lastPreset.getSceneNumber();
+}
+
+void Screen::printFirmwareVersion(Version version) {
+
+}
+
 void Screen::drawBootSplash() {
+  _booting = true;
   clearScreen();
+  printText("Connecting...", {0, 0}, FONT_SIZE_3);
 }
 
 void Screen::printText(const char *text, const ScreenPoint p, 
