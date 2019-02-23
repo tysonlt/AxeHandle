@@ -20,6 +20,8 @@ class ControlSchemeLooper : public ControlScheme {
 
   public:
 
+    using ControlScheme::ControlScheme;
+
     virtual bool readButton(byte index, Button& button) {
       switch(index) {
 

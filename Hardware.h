@@ -2,6 +2,10 @@
 
 #include <Arduino.h>
 
+#define DEBUG
+#define P Serial.print
+#define PL Serial.println
+
 #define NUM_BUTTONS 10
 
 #define MUX0_PIN0 4

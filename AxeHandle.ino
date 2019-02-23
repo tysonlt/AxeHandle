@@ -8,17 +8,21 @@ InputManager input;
 
 void setup() {
 
-  Serial.begin(115200);
-  
   screen.init();
-  axe.begin(Serial1);
-  input.init(axe);
+
+  #ifdef DEBUG
+  Serial.begin(115200);
+  #endif
   
+  axe.begin(Serial1);
   axe.registerPresetChangeCallback(onPresetChange);
   axe.registerSystemChangeCallback(onSystemChange);
-  axe.enableRefresh(500);
-  axe.requestPresetDetails();
-  axe.requestTempo();
+  axe.registerTunerStatusCallback(onTunerStatus);
+  axe.registerTunerDataCallback(onTunerData);
+  axe.enableRefresh();
+  axe.refresh(true);
+
+  input.init(axe);
 
 }
 
@@ -28,9 +32,18 @@ void loop() {
 }
 
 void onPresetChange(AxePreset preset) {
-  screen.printPreset(preset);
+  screen.displayPreset(preset);
 }
 
 void onSystemChange() {
-  screen.printTempo(axe.getTempo());
+  screen.displayTempo(axe.getTempo());
+  screen.displayFirmwareVersion(axe.getFirmwareVersion());
+}
+
+void onTunerStatus(bool connected) {
+  screen.setTunerMode(connected);
+}
+
+void onTunerData(const char *note, const byte string, const byte fineTune) {
+  screen.displayTunerData(note, string, fineTune);
 }

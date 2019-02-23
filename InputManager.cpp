@@ -9,9 +9,9 @@ void InputManager::init(AxeSystem& axe) {
   
   _axe = &axe;
 
-  _controlSchemes[Standard] = new ControlSchemeStandard;
-  _controlSchemes[Looper] = new ControlSchemeLooper;
-  _controlSchemes[KitchenSink] = new ControlSchemeKitchenSink;
+  _controlSchemes[Standard] = new ControlSchemeStandard(_axe, this);
+  _controlSchemes[Looper] = new ControlSchemeLooper(_axe, this);
+  _controlSchemes[KitchenSink] = new ControlSchemeKitchenSink(_axe, this);
 
   setControlScheme(Standard);
 
@@ -23,23 +23,20 @@ void InputManager::init(AxeSystem& axe) {
     _buttons[i].setMultiplexer(&_mux, i);
     _buttons[i].setDebounceTime(BUTTON_DEBOUNCE[i]);
     _buttons[i].setInverted(BUTTON_INVERTED[i]);
+    _buttons[i].setPullupEnable(BUTTON_PULLUP[i]);
     _buttons[i].begin();
   }
 
 }
 
 bool InputManager::update() {
-  
   bool changed = false;
-
   for (byte i=0; i<NUM_BUTTONS; i++) {
     if (getControlScheme()->readButton(i, _buttons[i])) {
       changed = true;
     }
   }
-
   return changed;
-
 }
 
 void InputManager::nextControlScheme() {
