@@ -112,9 +112,6 @@ class Screen {
     unsigned width() { return _tft.width(); }
 		unsigned height() { return _tft.height(); }
 
-		bool isPresetChanged(AxePreset preset);
-		bool isSceneChanged(AxePreset preset);
-
     unsigned int rainbow(byte value);
 
     bool _booting = false;

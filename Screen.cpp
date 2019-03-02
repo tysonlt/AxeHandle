@@ -126,22 +126,22 @@ void Screen::displayPreset(AxePreset preset) {
   checkBooted();
   drawLine(POS(HEADER_LINE), COLR(PRESET_NUMBER));
 
-  if (_forceNextDisplay || isPresetChanged(preset)) {
+  if (_forceNextDisplay || !preset.equals(_lastPreset)) {
+
     snprintf(buf, sizeof(buf), "%03d", preset.getPresetNumber());
     printText(buf, POS(PRESET_NUMBER), FONT(PRESET_NUMBER), COLR(PRESET_NUMBER), OPTION_INVERT);
     preset.copyPresetName(buf, sizeof(buf));
     printText(buf, POS(PRESET_TITLE), FONT(PRESET_TITLE), COLR(PRESET_TITLE),	OPTION_WRAP);
-  } 
 
-  if (_forceNextDisplay || isSceneChanged(preset)) {
     snprintf(buf, sizeof(buf), "%d", preset.getSceneNumber());
     printText(buf, POS(SCENE_NUMBER), FONT(SCENE_NUMBER), COLR(SCENE_NUMBER), OPTION_INVERT);
     preset.copySceneName(buf, sizeof(buf));
     printText(buf, POS(SCENE_TITLE), FONT(SCENE_TITLE), COLR(SCENE_TITLE), OPTION_WRAP);
-  }
 
-  if (_forceNextDisplay || isPresetChanged(preset) || preset.effectsChanged(_lastPreset)) {
-    displayEffects(preset);
+    if (preset.effectsChanged(_lastPreset)) {
+      displayEffects(preset);
+    }
+
   }
 
   _lastPreset = preset;
@@ -188,14 +188,6 @@ void Screen::checkBooted() {
     _booting = false;
     clearScreen();
   }
-}
-
-bool Screen::isPresetChanged(AxePreset preset) {
-  return preset.getPresetNumber() != _lastPreset.getPresetNumber();
-}
-
-bool Screen::isSceneChanged(AxePreset preset) {
-  return isPresetChanged(preset) || preset.getSceneNumber() != _lastPreset.getSceneNumber();
 }
 
 void Screen::displayFirmwareVersion(Version version) {

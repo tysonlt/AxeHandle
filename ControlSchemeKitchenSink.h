@@ -27,91 +27,91 @@ class ControlSchemeKitchenSink : public ControlScheme {
       switch(index) {
         
         case Tap:
-          if (button.wasPressed()) {
+          if (PRESS) {
             _axe->sendTap();
             return true;
           }
           break;
 
         case PresetUp:
-          if (button.wasPressed()) {
+          if (PRESS) {
             _axe->sendPresetIncrement();
             return true;
           }
           break;
         
         case PresetDown:
-          if (button.wasPressed()) {
+          if (PRESS) {
             _axe->sendPresetIncrement();
             return true;
           }
           break;
 
         case ModeTuner:
-          if (button.pressedFor(BUTTON_HOLD_MILLIS)) {
+          if (HOLD) {
             _input->nextControlScheme();
             return true;
-          } else if (button.wasReleased()) {
+          } else if (RELEASE) {
             _axe->toggleTuner();
             return true;
           }
           break;
 
         case Scene1_5:
-          if (button.pressedFor(BUTTON_HOLD_MILLIS)) {
+          if (HOLD) {
             _axe->sendSceneChange(5);
             return true;
-          } else if (button.wasReleased()) {
+          } else if (RELEASE) {
             _axe->sendSceneChange(1);
             return true;
           }
           break;
 
         case Scene2_6:
-          if (button.pressedFor(BUTTON_HOLD_MILLIS)) {
+          if (HOLD) {
             _axe->sendSceneChange(6);
             return true;
-          } else if (button.wasReleased()) {
+          } else if (RELEASE) {
             _axe->sendSceneChange(2);
             return true;
           }
           break;
 
         case Scene3_7:
-          if (button.pressedFor(BUTTON_HOLD_MILLIS)) {
+          if (HOLD) {
             _axe->sendSceneChange(7);
             return true;
-          } else if (button.wasReleased()) {
+          } else if (RELEASE) {
             _axe->sendSceneChange(3);
             return true;
           }
           break;
 
         case Scene4_8:
-          if (button.pressedFor(BUTTON_HOLD_MILLIS)) {
+          if (HOLD) {
             _axe->sendSceneChange(8);
             return true;
-          } else if (button.wasReleased()) {
+          } else if (RELEASE) {
             _axe->sendSceneChange(4);
             return true;
           }
           break;
 
         case Record_Undo:
-          if (button.pressedFor(BUTTON_HOLD_MILLIS)) {
+          if (HOLD) {
             _axe->getLooper().undo();
             return true;
-          } else if (button.wasReleased()) {
+          } else if (RELEASE) {
             _axe->getLooper().record();
             return true;
           }
           break;
 
         case Play_Once:
-          if (button.pressedFor(BUTTON_HOLD_MILLIS)) {
+          if (HOLD) {
             _axe->getLooper().once();
             return true;
-          } else if (button.wasReleased()) {
+          } else if (RELEASE) {
             _axe->getLooper().play();
             return true;
           }

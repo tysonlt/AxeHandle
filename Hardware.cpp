@@ -1,40 +1,40 @@
 #include "Hardware.h"
 
 byte BUTTON_DEBOUNCE[NUM_BUTTONS] = {
-  25,
-  25,
-  25,
-  25,
-  25,
-  25,
-  25,
-  25,
-  25,
-  25
+  DEFAULT_DEBOUNCE,
+  DEFAULT_DEBOUNCE,
+  DEFAULT_DEBOUNCE,
+  DEFAULT_DEBOUNCE,
+  DEFAULT_DEBOUNCE,
+  DEFAULT_DEBOUNCE,
+  DEFAULT_DEBOUNCE,
+  DEFAULT_DEBOUNCE,
+  DEFAULT_DEBOUNCE,
+  DEFAULT_DEBOUNCE
 };
 
 bool BUTTON_INVERTED[NUM_BUTTONS] = {
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true
 };
 
 bool BUTTON_PULLUP[NUM_BUTTONS] = {
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true
 };

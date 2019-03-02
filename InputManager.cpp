@@ -13,7 +13,7 @@ void InputManager::init(AxeSystem& axe) {
   _controlSchemes[Looper] = new ControlSchemeLooper(_axe, this);
   _controlSchemes[KitchenSink] = new ControlSchemeKitchenSink(_axe, this);
 
-  setControlScheme(Standard);
+  setControlScheme(Looper);
 
   _mux.setPins(MUX0_PIN0, MUX0_PIN1, MUX0_PIN2, MUX0_PIN3);
   pinMode(MUX0_SIG_PIN, INPUT_PULLUP);
@@ -32,6 +32,7 @@ void InputManager::init(AxeSystem& axe) {
 bool InputManager::update() {
   bool changed = false;
   for (byte i=0; i<NUM_BUTTONS; i++) {
+    _buttons[i].read();
     if (getControlScheme()->readButton(i, _buttons[i])) {
       changed = true;
     }

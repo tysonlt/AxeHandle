@@ -12,7 +12,7 @@ class ControlSchemeLooper : public ControlScheme {
     Once_Reverse,   //3
     ModeTuner,      //4
     PresetDown,     //5
-    SceneDown,       //6
+    SceneDown,      //6
     Record,         //7
     Play,           //8
     Tap             //9
@@ -26,79 +26,79 @@ class ControlSchemeLooper : public ControlScheme {
       switch(index) {
 
         case Tap:
-          if (button.wasPressed()) {
+          if (PRESS) {
             _axe->sendTap();
             return true;
           }
           break;
         
         case PresetUp:
-          if (button.wasPressed()) {
+          if (PRESS) {
             _axe->sendPresetIncrement();
             return true;
           }
           break;
 
         case PresetDown:
-          if (button.wasPressed()) {
+          if (PRESS) {
             _axe->sendPresetDecrement();
             return true;
           }
           break;
 
         case SceneUp:
-          if (button.wasPressed()) {
+          if (PRESS) {
             _axe->sendSceneIncrement();
             return true;
           }
           break;
 
         case SceneDown:
-          if (button.wasPressed()) {
+          if (PRESS) {
             _axe->sendSceneDecrement();
             return true;
           }
           break;
 
         case Record:
-          if (button.wasPressed()) {
+          if (PRESS) {
             _axe->getLooper().record();
             return true;
           }
           break;
 
         case Play:
-          if (button.wasPressed()) {
+          if (PRESS) {
             _axe->getLooper().play();
             return true;
           }
           break;
 
         case Undo_HalfSpeed:
-          if (button.pressedFor(BUTTON_HOLD_MILLIS)) {
+          if (HOLD) {
             _axe->getLooper().halfSpeed();
             return true;
-          } else if (button.wasReleased()) {
+          } else if (RELEASE) {
             _axe->getLooper().undo();
             return true;
           }
           break;
 
         case Once_Reverse:
-          if (button.pressedFor(BUTTON_HOLD_MILLIS)) {
+          if (HOLD) {
             _axe->getLooper().reverse();
             return true;
-          } else if (button.wasReleased()) {
+          } else if (RELEASE) {
             _axe->getLooper().once();
             return true;
           }
           break;
 
         case ModeTuner:
-          if (button.pressedFor(BUTTON_HOLD_MILLIS)) {
+          if (HOLD) {
             _input->nextControlScheme();
             return true;
-          } else if (button.wasReleased()) {
+          } else if (RELEASE) {
             _axe->toggleTuner();
             return true;
           }
