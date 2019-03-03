@@ -1,37 +1,41 @@
 #pragma once
 
 #include <SC_Button.h>
-#include "ControlScheme.h"
+#include "LayoutInterface.h"
 
-class ControlSchemeLooper : public ControlScheme {
+class LayoutLooper : public LayoutInterface {
 
-  enum Buttons {
-    PresetUp,       //0
-    SceneUp,        //1
-    Undo_HalfSpeed, //2
-    Once_Reverse,   //3
-    ModeTuner,      //4
-    PresetDown,     //5
-    SceneDown,      //6
-    Record,         //7
-    Play,           //8
-    Tap             //9
-  };
+  friend class InputManager;
 
   public:
 
-    using ControlScheme::ControlScheme;
+    virtual void update() {}
+
+  protected:
+
+    enum Buttons {
+      PresetUp,       //0
+      SceneUp,        //1
+      Undo_HalfSpeed, //2
+      Once_Reverse,   //3
+      ModeTuner,      //4
+      PresetDown,     //5
+      SceneDown,      //6
+      Record,         //7
+      Play,           //8
+      Tap             //9
+    };
+
+    using LayoutInterface::LayoutInterface;
 
     virtual bool readButton(byte index, Button& button) {
+
+      if (processStandardButtons(index, button)) {
+        return true;
+      }
+
       switch(index) {
 
-        case Tap:
-          if (PRESS) {
-            _axe->sendTap();
-            return true;
-          }
-          break;
-        
         case PresetUp:
           if (PRESS) {
             _axe->sendPresetIncrement();
@@ -94,15 +98,6 @@ class ControlSchemeLooper : public ControlScheme {
           }
           break;
 
-        case ModeTuner:
-          if (HOLD) {
-            _input->nextControlScheme();
-            return true;
-          } else if (RELEASE) {
-            _axe->toggleTuner();
-            return true;
-          }
-          break;
       };
       return false;
     }

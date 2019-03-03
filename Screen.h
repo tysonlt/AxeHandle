@@ -1,6 +1,7 @@
 #pragma once
 #include <MCUFRIEND_kbv.h>   
 #include <AxeFxControl.h>
+#include "InputManager.h"
 #include "Hardware.h"
 
 typedef byte FontSize;
@@ -21,10 +22,12 @@ enum ElementPosition {
 	EFFECTS,
 	FOOTER_LINE,
 	FOOTER,
+  TEMPO,
   TUNER_NOTE,
   TUNER_STRING,
   TUNER_FINETUNE,
-  TUNER_DISPLAY
+  TUNER_DISPLAY,
+  LAYOUT
 };
 
 class Screen {
@@ -37,6 +40,7 @@ class Screen {
 		void displayPreset(AxePreset preset);
 		void displayTempo(Tempo tempo);
 		void displayFirmwareVersion(Version version);
+    void displayLayout(LayoutType layout);
     void setTunerMode(bool enabled);
     void displayTunerData(const char *note, const byte string, const byte fineTune);
 
@@ -105,6 +109,8 @@ class Screen {
 										const FontSize textSize = FONT_SIZE_1, const Colour colour = COLOUR_DEFAULT, 
 										const displayOption_t options = 0);
 
+    void printText(const char *text, ElementPosition pos, const displayOption_t options = 0);
+
     void drawBootSplash();
     void drawTunerGrid();
 
@@ -120,6 +126,7 @@ class Screen {
     byte _lastFineTune = 0;
 		AxePreset _lastPreset;
     Tempo _lastTempo;
+    LayoutType _lastLayout;
     MCUFRIEND_kbv _tft;
 
 };

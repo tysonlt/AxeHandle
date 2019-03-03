@@ -19,6 +19,7 @@ void Screen::setTunerMode(bool enabled) {
     _forceNextDisplay = true;
     displayPreset(_lastPreset);
     displayTempo(_lastTempo);
+    displayLayout(_lastLayout);
     _forceNextDisplay = false;
   } 
 
@@ -59,13 +60,13 @@ void Screen::displayTunerData(const char *note, const byte string, const byte fi
   int cents = fineTune - TUNER_CENTRE;
   ScreenPoint p = POS(TUNER_DISPLAY);
 
-  printText(note, POS(TUNER_NOTE), FONT(TUNER_NOTE), COLR(TUNER_NOTE));
+  printText(note, TUNER_NOTE);
 
   snprintf(buf, sz, "%d", string);
-  printText(buf, POS(TUNER_STRING), FONT(TUNER_STRING), COLR(TUNER_STRING));
+  printText(buf, TUNER_STRING);
   
   snprintf(buf, sz, "%03d", cents);
-  printText(buf, POS(TUNER_FINETUNE), FONT(TUNER_FINETUNE), COLR(TUNER_FINETUNE));
+  printText(buf, TUNER_FINETUNE);
 
   byte offset = TUNER_GRID_GAP * 3;
   unsigned width = TUNER_RESOLUTION * TUNER_GRID_GAP * 2;
@@ -113,9 +114,8 @@ void Screen::displayTempo(Tempo tempo) {
 	char buf[50];
   if (_tunerEngaged) return;
   checkBooted();
-	snprintf(buf, getMaxCharsPerLine() + 1, "TEMPO: %d BPM   ", tempo);
-	printText(buf, POS(FOOTER), FONT(FOOTER), COLR(FOOTER));
-	drawLine(POS(FOOTER_LINE), COLR(FOOTER_LINE));
+	snprintf(buf, getMaxCharsPerLine() + 1, "%d BPM   ", tempo);
+	printText(buf, TEMPO);
   _lastTempo = tempo;
 }
 
@@ -124,21 +124,23 @@ void Screen::displayPreset(AxePreset preset) {
 
   if (_tunerEngaged) return;
   checkBooted();
+  
   drawLine(POS(HEADER_LINE), COLR(PRESET_NUMBER));
+  drawLine(POS(FOOTER_LINE), COLR(FOOTER_LINE));
 
   if (_forceNextDisplay || !preset.equals(_lastPreset)) {
 
     snprintf(buf, sizeof(buf), "%03d", preset.getPresetNumber());
-    printText(buf, POS(PRESET_NUMBER), FONT(PRESET_NUMBER), COLR(PRESET_NUMBER), OPTION_INVERT);
+    printText(buf, PRESET_NUMBER, OPTION_INVERT);
     preset.copyPresetName(buf, sizeof(buf));
-    printText(buf, POS(PRESET_TITLE), FONT(PRESET_TITLE), COLR(PRESET_TITLE),	OPTION_WRAP);
+    printText(buf, PRESET_TITLE, OPTION_WRAP);
 
     snprintf(buf, sizeof(buf), "%d", preset.getSceneNumber());
-    printText(buf, POS(SCENE_NUMBER), FONT(SCENE_NUMBER), COLR(SCENE_NUMBER), OPTION_INVERT);
+    printText(buf, SCENE_NUMBER, OPTION_INVERT);
     preset.copySceneName(buf, sizeof(buf));
-    printText(buf, POS(SCENE_TITLE), FONT(SCENE_TITLE), COLR(SCENE_TITLE), OPTION_WRAP);
+    printText(buf, SCENE_TITLE, OPTION_WRAP);
 
-    if (preset.effectsChanged(_lastPreset)) {
+    if (_forceNextDisplay || preset.effectsChanged(_lastPreset)) {
       displayEffects(preset);
     }
 
@@ -183,6 +185,31 @@ void Screen::displayEffects(AxePreset preset) {
 	
 }
 
+void Screen::displayLayout(LayoutType layout) {
+
+  if (_booting || _tunerEngaged) return;
+
+  switch (layout) {
+    case Pedals:
+      printText("     Pedals", LAYOUT);
+      break;
+    case Scenes:
+      printText("     Scenes", LAYOUT);
+      break;
+    case Looper:
+      printText("      Looper", LAYOUT);
+      break;
+    case KitchenSink:
+      printText(" KitchenSink", LAYOUT);
+      break;
+    default: 
+      break;
+  }
+
+  _lastLayout = layout;
+
+}
+
 void Screen::checkBooted() {
   if (_booting) {
     _booting = false;
@@ -192,6 +219,10 @@ void Screen::checkBooted() {
 
 void Screen::displayFirmwareVersion(Version version) {
 
+}
+
+void Screen::printText(const char *text, ElementPosition pos, const displayOption_t options) {
+  printText(text, POS(pos), FONT(pos), COLR(pos), options);
 }
 
 void Screen::printText(const char *text, const ScreenPoint p, 
@@ -245,6 +276,8 @@ Colour Screen::COLR(ElementPosition pos) {
 
     case FOOTER_LINE:
     case FOOTER:
+    case TEMPO:
+    case LAYOUT:
       return MAGENTA;
 
     case TUNER_NOTE:
@@ -265,6 +298,8 @@ FontSize Screen::FONT(ElementPosition pos) {
     case SCENE_NUMBER:
       return FONT_SIZE_5;
     case FOOTER:
+    case TEMPO:
+    case LAYOUT:
       return FONT_SIZE_2;
     case TUNER_NOTE:
     case TUNER_STRING:
@@ -298,8 +333,11 @@ ScreenPoint Screen::POS(ElementPosition pos) {
       return {10, (height() / 3) * 2};
     case FOOTER_LINE:
       return { 0, (unsigned) (POS(FOOTER).y - 5) };
+    case TEMPO:
     case FOOTER:
       return { 1, (unsigned) (height() - currentFont * CHAR_H) };
+    case LAYOUT:
+      return { width() - currentFont * CHAR_W * 12, POS(FOOTER).y };
     default:
       return {0, 0};
   }

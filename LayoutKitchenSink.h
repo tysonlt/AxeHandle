@@ -1,38 +1,42 @@
 #pragma once
 
 #include <SC_Button.h>
-#include "ControlScheme.h"
+#include "LayoutInterface.h"
 #include "Hardware.h"
 
-class ControlSchemeKitchenSink : public ControlScheme {
+class LayoutKitchenSink : public LayoutInterface {
 
-  enum Buttons {
-    PresetUp,       //0
-    Scene3_7,       //1
-    Scene4_8,       //2
-    Record_Undo,    //3
-    ModeTuner,      //4
-    PresetDown,     //5
-    Scene1_5,       //6
-    Scene2_6,       //7
-    Play_Once,      //8
-    Tap             //9
-  };
+  friend class InputManager;
 
   public:
 
-    using ControlScheme::ControlScheme;
+    virtual void update() {}
+
+  protected:
+
+    enum Buttons {
+      PresetUp,       //0
+      Scene3_7,       //1
+      Scene4_8,       //2
+      Record_Undo,    //3
+      ModeTuner,      //4
+      PresetDown,     //5
+      Scene1_5,       //6
+      Scene2_6,       //7
+      Play_Once,      //8
+      Tap             //9
+    };
+
+    using LayoutInterface::LayoutInterface;
 
     virtual bool readButton(byte index, Button& button) {
+
+      if (processStandardButtons(index, button)) {
+        return true;
+      }
+
       switch(index) {
         
-        case Tap:
-          if (PRESS) {
-            _axe->sendTap();
-            return true;
-          }
-          break;
-
         case PresetUp:
           if (PRESS) {
             _axe->sendPresetIncrement();
@@ -43,16 +47,6 @@ class ControlSchemeKitchenSink : public ControlScheme {
         case PresetDown:
           if (PRESS) {
             _axe->sendPresetIncrement();
-            return true;
-          }
-          break;
-
-        case ModeTuner:
-          if (HOLD) {
-            _input->nextControlScheme();
-            return true;
-          } else if (RELEASE) {
-            _axe->toggleTuner();
             return true;
           }
           break;

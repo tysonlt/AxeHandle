@@ -5,34 +5,46 @@
 #include <SC_Multiplexer.h>
 #include <SC_Button.h> 
 #include "Hardware.h"
-#include "ControlScheme.h"
+#include "Leds.h"
 
-enum ControlSchemeType {
-  Standard,
+enum LayoutType {
+  Pedals,
+  Scenes,
   Looper,
   KitchenSink,
-  __NUM_CONTROL_SCHEME_TYPES
+  __NUM_LAYOUT_TYPES
 };
 
+typedef void (*LayoutChangeCallback)(const LayoutType layout);
+
+class LayoutInterface;
 class InputManager {
 
   public:
 
-    void init(AxeSystem& axe);
+    void init(AxeSystem& axe, Leds& leds);
     bool update();
-    void setControlScheme(ControlSchemeType scheme) { _schemeType = scheme; }
-    void nextControlScheme();
+    void updateLeds();
+    void nextLayout();
+    
+    void setLayout(LayoutType layout);
+    LayoutType getLayout() { return _layoutType; }
+
+    void registerLayoutChangeCallback(LayoutChangeCallback func) { _layoutChangeCallback = func; }
+    void callLayoutChangeCallback();
 
   private:
 
-    ControlScheme* getControlScheme() {
-      return _controlSchemes[_schemeType];
+    LayoutInterface* layout() {
+      return _layouts[_layoutType];
     }
 
     AxeSystem *_axe = nullptr;
+    Leds *_leds = nullptr;
     Button _buttons[NUM_BUTTONS];
     Multiplexer _mux;
-    ControlSchemeType _schemeType;
-    ControlScheme *_controlSchemes[__NUM_CONTROL_SCHEME_TYPES];
+    LayoutType _layoutType;
+    LayoutInterface *_layouts[__NUM_LAYOUT_TYPES];
+    LayoutChangeCallback _layoutChangeCallback = NULL;
 
 };

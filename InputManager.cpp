@@ -1,19 +1,22 @@
 #include <SC_Multiplexer.h>
 #include <SC_Button.h>
 #include "InputManager.h"
-#include "ControlSchemeStandard.h"
-#include "ControlSchemeLooper.h"
-#include "ControlSchemeKitchenSink.h"
+#include "LayoutScenes.h"
+#include "LayoutLooper.h"
+#include "LayoutKitchenSink.h"
+#include "LayoutPedals.h"
 
-void InputManager::init(AxeSystem& axe) {
+void InputManager::init(AxeSystem& axe, Leds& leds) {
   
   _axe = &axe;
+  _leds = &leds;
 
-  _controlSchemes[Standard] = new ControlSchemeStandard(_axe, this);
-  _controlSchemes[Looper] = new ControlSchemeLooper(_axe, this);
-  _controlSchemes[KitchenSink] = new ControlSchemeKitchenSink(_axe, this);
+  _layouts[Pedals] = new LayoutPedals(_axe, this, _leds);
+  _layouts[Scenes] = new LayoutScenes(_axe, this, _leds);
+  _layouts[Looper] = new LayoutLooper(_axe, this, _leds);
+  _layouts[KitchenSink] = new LayoutKitchenSink(_axe, this, _leds);
 
-  setControlScheme(Looper);
+  setLayout(Pedals);
 
   _mux.setPins(MUX0_PIN0, MUX0_PIN1, MUX0_PIN2, MUX0_PIN3);
   pinMode(MUX0_SIG_PIN, INPUT_PULLUP);
@@ -30,16 +33,34 @@ void InputManager::init(AxeSystem& axe) {
 }
 
 bool InputManager::update() {
+
   bool changed = false;
   for (byte i=0; i<NUM_BUTTONS; i++) {
     _buttons[i].read();
-    if (getControlScheme()->readButton(i, _buttons[i])) {
+    if (layout()->readButton(i, _buttons[i])) {
       changed = true;
     }
   }
+
   return changed;
+
 }
 
-void InputManager::nextControlScheme() {
-  _schemeType = static_cast<ControlSchemeType>((_schemeType + 1) % __NUM_CONTROL_SCHEME_TYPES);
+void InputManager::updateLeds() { 
+  layout()->update(); 
+}
+
+void InputManager::nextLayout() {
+  setLayout( static_cast<LayoutType>((_layoutType + 1) % __NUM_LAYOUT_TYPES) );
+}
+
+void InputManager::setLayout(LayoutType layout) { 
+  _layoutType = layout; 
+  callLayoutChangeCallback(); 
+}
+
+void InputManager::callLayoutChangeCallback() {
+  if (NULL != _layoutChangeCallback) {
+    (_layoutChangeCallback)(_layoutType);
+  }
 }
