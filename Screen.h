@@ -122,6 +122,7 @@ class Screen {
 
     bool _booting = false;
     bool _tunerEngaged = false;
+    bool _forceNextDisplay = false;
     byte _lastFineTune = 0;
 		AxePreset _lastPreset;
     Tempo _lastTempo;
