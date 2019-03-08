@@ -17,10 +17,6 @@ class LayoutInterface {
 
     virtual void update() =0;
 
-		virtual bool filterEffect(const PresetNumber number, AxeEffect effect) {
-			return AxeEffect::defaultEffectFilter(number, effect);
-		}
-
   protected:
 
     static const byte BUTTON_TAP = 9;
