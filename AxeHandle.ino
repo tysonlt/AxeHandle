@@ -2,6 +2,7 @@
 #include <Timer.h>
 #include "Hardware.h"
 #include "InputManager.h"
+#include "LayoutInterface.h"
 #include "Leds.h"
 #include "Screen.h"
 
@@ -27,6 +28,7 @@ void setup() {
   axe.registerTunerStatusCallback(onTunerStatus);
   axe.registerTunerDataCallback(onTunerData);
   axe.registerTapTempoCallback(onTapTempo);
+	// axe.registerEffectFilterCallback(onEffectFilter);
   axe.enableRefresh();
   axe.refresh(true);
 
@@ -55,16 +57,20 @@ void onLayoutChange(const LayoutType layout) {
   screen.displayLayout(layout);
 }
 
+bool onEffectFilter(const PresetNumber number, AxeEffect effect) {
+	return input.getLayout()->filterEffect(number, effect);
+}
+
 void onPresetChange(AxePreset preset) {
   screen.displayPreset(preset);
-  screen.displayLayout(input.getLayout());
+  screen.displayLayout(input.getLayoutType());
   input.updateLeds();
 }
 
 void onSystemChange() {
   screen.displayTempo(axe.getTempo());
   screen.displayFirmwareVersion(axe.getFirmwareVersion());
-  screen.displayLayout(input.getLayout());
+  screen.displayLayout(input.getLayoutType());
 }
 
 void onTunerStatus(bool connected) {
