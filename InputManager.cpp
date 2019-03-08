@@ -16,7 +16,7 @@ void InputManager::init(AxeSystem& axe, Leds& leds) {
   _layouts[Looper] = new LayoutLooper(_axe, this, _leds);
   _layouts[KitchenSink] = new LayoutKitchenSink(_axe, this, _leds);
 
-  setLayout(Pedals);
+  setLayoutType(Pedals);
 
   _mux.setPins(MUX0_PIN0, MUX0_PIN1, MUX0_PIN2, MUX0_PIN3);
   pinMode(MUX0_SIG_PIN, INPUT_PULLUP);
@@ -37,7 +37,7 @@ bool InputManager::update() {
   bool changed = false;
   for (byte i=0; i<NUM_BUTTONS; i++) {
     _buttons[i].read();
-    if (layout()->readButton(i, _buttons[i])) {
+    if (getLayout()->readButton(i, _buttons[i])) {
       changed = true;
     }
   }
@@ -47,14 +47,14 @@ bool InputManager::update() {
 }
 
 void InputManager::updateLeds() { 
-  layout()->update(); 
+  getLayout()->update(); 
 }
 
 void InputManager::nextLayout() {
-  setLayout( static_cast<LayoutType>((_layoutType + 1) % __NUM_LAYOUT_TYPES) );
+  setLayoutType( static_cast<LayoutType>((_layoutType + 1) % __NUM_LAYOUT_TYPES) );
 }
 
-void InputManager::setLayout(LayoutType layout) { 
+void InputManager::setLayoutType(LayoutType layout) { 
   _layoutType = layout; 
   callLayoutChangeCallback(); 
 }
