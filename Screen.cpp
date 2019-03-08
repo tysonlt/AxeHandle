@@ -16,11 +16,9 @@ void Screen::setTunerMode(bool enabled) {
   if (_tunerEngaged) {
     drawTunerGrid();
   } else {
-    _forceNextDisplay = true;
     displayPreset(_lastPreset);
     displayTempo(_lastTempo);
     displayLayout(_lastLayout);
-    _forceNextDisplay = false;
   } 
 
 }
@@ -128,23 +126,17 @@ void Screen::displayPreset(AxePreset preset) {
   drawLine(POS(HEADER_LINE), COLR(PRESET_NUMBER));
   drawLine(POS(FOOTER_LINE), COLR(FOOTER_LINE));
 
-  if (_forceNextDisplay || !preset.equals(_lastPreset)) {
+	snprintf(buf, sizeof(buf), "%03d", preset.getPresetNumber());
+	printText(buf, PRESET_NUMBER, OPTION_INVERT);
+	preset.copyPresetName(buf, sizeof(buf));
+	printText(buf, PRESET_TITLE, OPTION_WRAP);
 
-    snprintf(buf, sizeof(buf), "%03d", preset.getPresetNumber());
-    printText(buf, PRESET_NUMBER, OPTION_INVERT);
-    preset.copyPresetName(buf, sizeof(buf));
-    printText(buf, PRESET_TITLE, OPTION_WRAP);
+	snprintf(buf, sizeof(buf), "%d", preset.getSceneNumber());
+	printText(buf, SCENE_NUMBER, OPTION_INVERT);
+	preset.copySceneName(buf, sizeof(buf));
+	printText(buf, SCENE_TITLE, OPTION_WRAP);
 
-    snprintf(buf, sizeof(buf), "%d", preset.getSceneNumber());
-    printText(buf, SCENE_NUMBER, OPTION_INVERT);
-    preset.copySceneName(buf, sizeof(buf));
-    printText(buf, SCENE_TITLE, OPTION_WRAP);
-
-    if (_forceNextDisplay || preset.effectsChanged(_lastPreset)) {
-      displayEffects(preset);
-    }
-
-  }
+	displayEffects(preset);
 
   _lastPreset = preset;
 
