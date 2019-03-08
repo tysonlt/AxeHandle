@@ -27,14 +27,17 @@ class InputManager {
     void updateLeds();
     void nextLayout();
     
-    void setLayoutType(LayoutType layout);
-    LayoutType getLayoutType() { return _layoutType; }
-		LayoutInterface* getLayout() { return _layouts[_layoutType]; }
+    void setLayout(LayoutType layout);
+    LayoutType getLayout() { return _layoutType; }
 
     void registerLayoutChangeCallback(LayoutChangeCallback func) { _layoutChangeCallback = func; }
     void callLayoutChangeCallback();
 
   private:
+
+    LayoutInterface* layout() {
+      return _layouts[_layoutType];
+    }
 
     AxeSystem *_axe = nullptr;
     Leds *_leds = nullptr;
