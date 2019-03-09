@@ -6,7 +6,8 @@ class Leds {
 
   public:
 
-    static const byte TAP_TEMPO_LED = 4;
+		static const byte MODE_TUNER_LED = 4;
+    static const byte TAP_TEMPO_LED = 9;
     static const byte NUM_LEDS = 10;
 
     void init();
