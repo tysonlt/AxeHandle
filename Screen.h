@@ -2,6 +2,7 @@
 #include <MCUFRIEND_kbv.h>   
 #include <AxeFxControl.h>
 #include "InputManager.h"
+#include "LayoutInterface.h"
 #include "Hardware.h"
 
 typedef byte FontSize;
@@ -40,7 +41,7 @@ class Screen {
 		void displayPreset(AxePreset preset);
 		void displayTempo(Tempo tempo);
 		void displayFirmwareVersion(Version version);
-    void displayLayout(LayoutType layout);
+    void displayLayout(LayoutInterface *layout);
     void setTunerMode(bool enabled);
     void displayTunerData(const char *note, const byte string, const byte fineTune);
 
@@ -126,7 +127,7 @@ class Screen {
     byte _lastFineTune = 0;
 		AxePreset _lastPreset;
     Tempo _lastTempo;
-    LayoutType _lastLayout;
+    LayoutInterface *_lastLayout = nullptr;
     MCUFRIEND_kbv _tft;
 
 };

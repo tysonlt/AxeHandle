@@ -185,26 +185,14 @@ void Screen::displayEffects(AxePreset preset) {
 	
 }
 
-void Screen::displayLayout(LayoutType layout) {
+void Screen::displayLayout(LayoutInterface *layout) {
 
   if (_booting || _tunerEngaged) return;
 
-  switch (layout) {
-    case Pedals:
-      printText("     Pedals", LAYOUT);
-      break;
-    case Scenes:
-      printText("     Scenes", LAYOUT);
-      break;
-    case Looper:
-      printText("      Looper", LAYOUT);
-      break;
-    case KitchenSink:
-      printText(" KitchenSink", LAYOUT);
-      break;
-    default: 
-      break;
-  }
+	const size_t sz = 13;
+	char buf[sz];
+	snprintf(buf, sz, "%11s", layout->getName());
+  printText(buf, LAYOUT);
 
   _lastLayout = layout;
 
