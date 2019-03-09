@@ -3,20 +3,24 @@
 #include "InputManager.h"
 #include "LayoutScenes.h"
 #include "LayoutLooper.h"
+#include "LayoutMidi.h"
 #include "LayoutKitchenSink.h"
 #include "LayoutPedals.h"
 
-void InputManager::init(AxeSystem& axe, Leds& leds) {
+void InputManager::init(AxeSystem& axe, Leds& leds, Screen& screen) {
   
   _axe = &axe;
   _leds = &leds;
 
-  _layouts[Pedals] = new LayoutPedals(_axe, this, _leds);
-  _layouts[Scenes] = new LayoutScenes(_axe, this, _leds);
-  _layouts[Looper] = new LayoutLooper(_axe, this, _leds);
-  _layouts[KitchenSink] = new LayoutKitchenSink(_axe, this, _leds);
+	_leds->dim(Leds::MODE_TUNER_LED);
+	
+  _layouts[Pedals] = new LayoutPedals(_axe, this, _leds, &screen);
+  _layouts[Scenes] = new LayoutScenes(_axe, this, _leds, &screen);
+	// _layouts[Midi]   = new LayoutMidi(_axe, this, _leds);
+  // _layouts[Looper] = new LayoutLooper(_axe, this, _leds);
+  // _layouts[KitchenSink] = new LayoutKitchenSink(_axe, this, _leds);
 
-  setLayoutType(Pedals);
+  _layoutType = Pedals;
 
   _mux.setPins(MUX0_PIN0, MUX0_PIN1, MUX0_PIN2, MUX0_PIN3);
   pinMode(MUX0_SIG_PIN, INPUT_PULLUP);
@@ -37,7 +41,7 @@ bool InputManager::update() {
   bool changed = false;
   for (byte i=0; i<NUM_BUTTONS; i++) {
     _buttons[i].read();
-    if (getLayout()->readButton(i, _buttons[i])) {
+    if (getLayout()->read(i, _buttons[i])) {
       changed = true;
     }
   }
@@ -46,21 +50,18 @@ bool InputManager::update() {
 
 }
 
-void InputManager::updateLeds() { 
-  getLayout()->update(); 
-}
-
 void InputManager::nextLayout() {
   setLayoutType( static_cast<LayoutType>((_layoutType + 1) % __NUM_LAYOUT_TYPES) );
 }
 
 void InputManager::setLayoutType(LayoutType layout) { 
   _layoutType = layout; 
+	getLayout()->reset();
   callLayoutChangeCallback(); 
 }
 
 void InputManager::callLayoutChangeCallback() {
   if (NULL != _layoutChangeCallback) {
-    (_layoutChangeCallback)(_layoutType);
+    (_layoutChangeCallback)(getLayout());
   }
 }

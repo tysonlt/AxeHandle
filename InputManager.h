@@ -10,21 +10,22 @@
 enum LayoutType {
   Pedals,
   Scenes,
-  Looper,
-  KitchenSink,
+	// Midi,
+  //Looper,
+  //KitchenSink,
   __NUM_LAYOUT_TYPES
 };
 
-typedef void (*LayoutChangeCallback)(const LayoutType layout);
-
 class LayoutInterface;
+class Screen;
+typedef void (*LayoutChangeCallback)(LayoutInterface *layout);
+
 class InputManager {
 
   public:
 
-    void init(AxeSystem& axe, Leds& leds);
+    void init(AxeSystem& axe, Leds& leds, Screen& screen);
     bool update();
-    void updateLeds();
     void nextLayout();
     
     void setLayoutType(LayoutType layout);
