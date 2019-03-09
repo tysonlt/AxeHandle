@@ -10,7 +10,7 @@ class LayoutKitchenSink : public LayoutInterface {
 
   public:
 
-    virtual void update() {}
+		const char* getName() { return "KitchenSink"; }
 
   protected:
 
@@ -29,11 +29,11 @@ class LayoutKitchenSink : public LayoutInterface {
 
     using LayoutInterface::LayoutInterface;
 
-    virtual bool readButton(byte index, Button& button) {
+		void reset() {
+			_leds->dimAll();
+		}
 
-      if (processStandardButtons(index, button)) {
-        return true;
-      }
+    bool readButton(const byte index, Button& button) {
 
       switch(index) {
         

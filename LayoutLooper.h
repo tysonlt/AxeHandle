@@ -9,7 +9,7 @@ class LayoutLooper : public LayoutInterface {
 
   public:
 
-    virtual void update() {}
+		const char* getName() { return "Looper"; }
 
   protected:
 
@@ -28,11 +28,11 @@ class LayoutLooper : public LayoutInterface {
 
     using LayoutInterface::LayoutInterface;
 
-    virtual bool readButton(byte index, Button& button) {
+		void reset() {
+			_leds->dimAll();
+		}
 
-      if (processStandardButtons(index, button)) {
-        return true;
-      }
+    virtual bool readButton(const byte index, Button& button) {
 
       switch(index) {
 
