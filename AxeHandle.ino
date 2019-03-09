@@ -27,11 +27,12 @@ void setup() {
   axe.registerTunerStatusCallback(onTunerStatus);
   axe.registerTunerDataCallback(onTunerData);
   axe.registerTapTempoCallback(onTapTempo);
+	axe.registerEffectFilterCallback(onEffectFilter);
   axe.enableRefresh();
   axe.refresh(true);
 
   input.registerLayoutChangeCallback(onLayoutChange);
-  input.init(axe, leds);
+  input.init(axe, leds, screen);
 
 }
 
@@ -51,14 +52,18 @@ void turnOffTapTempoLed() {
   leds.off(Leds::TAP_TEMPO_LED);
 }
 
-void onLayoutChange(const LayoutType layout) {
+bool onEffectFilter(const PresetNumber number, AxeEffect effect) {
+	return input.getLayout()->filterEffect(number, effect);
+}
+
+void onLayoutChange(LayoutInterface *layout) {
   screen.displayLayout(layout);
 }
 
 void onPresetChange(AxePreset preset) {
-  screen.displayPreset(preset);
+  input.getLayout()->reset();
+	screen.displayPreset(preset);
   screen.displayLayout(input.getLayout());
-  input.updateLeds();
 }
 
 void onSystemChange() {
@@ -67,8 +72,9 @@ void onSystemChange() {
   screen.displayLayout(input.getLayout());
 }
 
-void onTunerStatus(bool connected) {
-  screen.setTunerMode(connected);
+void onTunerStatus(bool engaged) {
+	engaged ? leds.on(Leds::MODE_TUNER_LED) : leds.dim(Leds::MODE_TUNER_LED);
+  screen.setTunerMode(engaged);
 }
 
 void onTunerData(const char *note, const byte string, const byte fineTune) {
