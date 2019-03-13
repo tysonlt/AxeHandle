@@ -1,6 +1,7 @@
 #pragma once
-#include <MCUFRIEND_kbv.h>   
+
 #include <AxeFxControl.h>
+#include <ST7735_t3.h>
 #include "InputManager.h"
 #include "LayoutInterface.h"
 #include "Hardware.h"
@@ -28,7 +29,8 @@ enum ElementPosition {
   TUNER_STRING,
   TUNER_FINETUNE,
   TUNER_DISPLAY,
-  LAYOUT
+  LAYOUT,
+  SPLASH
 };
 
 class Screen {
@@ -47,8 +49,8 @@ class Screen {
 
   private:
 
-		const static byte SCREEN_ROTATION 		= 3;
-    const static byte MAX_CHARS_PER_LINE 	= 52;
+		const static byte SCREEN_ROTATION 		= 1;
+    const static byte MAX_CHARS_PER_LINE 	= 26;
     const static byte TUNER_CENTRE 	      = 63;
     const static byte TUNER_RESOLUTION    = 49; //either side of 63
     constexpr static int8_t TUNER_MIN     = TUNER_CENTRE - TUNER_RESOLUTION;
@@ -116,8 +118,8 @@ class Screen {
     void drawTunerGrid();
 
     byte getScreenRotation() { return SCREEN_ROTATION; }
-    unsigned width() { return _tft.width(); }
-		unsigned height() { return _tft.height(); }
+    unsigned width() { return 160; }
+		unsigned height() { return 128; }
 
     unsigned int rainbow(byte value);
 
@@ -128,6 +130,6 @@ class Screen {
 		AxePreset _lastPreset;
     Tempo _lastTempo;
     LayoutInterface *_lastLayout = nullptr;
-    MCUFRIEND_kbv _tft;
+    ST7735_t3 _tft = ST7735_t3(TFT_CS, TFT_DC, TFT_RST); 
 
 };

@@ -8,11 +8,15 @@
 
 #define NUM_BUTTONS 10
 
-#define MUX0_PIN0 4
-#define MUX0_PIN1 5
-#define MUX0_PIN2 6
-#define MUX0_PIN3 7
-#define MUX0_SIG_PIN 27
+#define TFT_CS 10
+#define TFT_DC 9
+#define TFT_RST 8
+
+#define MUX0_PIN0 2
+#define MUX0_PIN1 3
+#define MUX0_PIN2 4
+#define MUX0_PIN3 5
+#define MUX0_SIG_PIN 6
 
 #define DEFAULT_DEBOUNCE 100
 

@@ -18,20 +18,20 @@ void setup() {
   leds.init();
 
   #ifdef DEBUG
-  Serial.begin(115200);
+  Serial.begin(9600);
   #endif
-  
+
   axe.begin(Serial1);
   axe.registerPresetChangeCallback(onPresetChange);
   axe.registerSystemChangeCallback(onSystemChange);
   axe.registerTunerStatusCallback(onTunerStatus);
   axe.registerTunerDataCallback(onTunerData);
   axe.registerTapTempoCallback(onTapTempo);
-	axe.registerEffectFilterCallback(onEffectFilter);
+	// axe.registerEffectFilterCallback(onEffectFilter);
   axe.enableRefresh();
   axe.refresh(true);
 
-  input.registerLayoutChangeCallback(onLayoutChange);
+  // input.registerLayoutChangeCallback(onLayoutChange);
   input.init(axe, leds, screen);
 
 }
