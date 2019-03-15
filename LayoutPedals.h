@@ -11,26 +11,7 @@ class LayoutPedals : public LayoutInterface {
 public:
   const char *getName() { return "Pedals"; }
 
-  void reset() {
-    _leds->on(PresetSceneUp);
-    _leds->on(PresetSceneDown);
-    updateEffectLeds();
-  }
-
-  bool filterEffect(const PresetNumber number, AxeEffect effect) {
-    switch (effect.getEffectId()) {
-    case ID_FUZZ1:
-    case ID_FUZZ2:
-    case ID_DELAY1:
-    case ID_DELAY2:
-    case ID_WAH1:
-    case ID_CHORUS1:
-      return true;
-    default:
-      return false;
-    }
-    return false;
-  }
+  void reset() { updateEffectLeds(); }
 
 protected:
   enum Buttons {
@@ -86,7 +67,6 @@ private:
       if (AxeEffect *effect = _axe->getCurrentPreset().getEffectById(effectId)) {
         effect->toggle();
         updateEffectLeds();
-        _screen->displayPreset(_axe->getCurrentPreset());
         return true;
       }
     }

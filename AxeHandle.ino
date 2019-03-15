@@ -1,9 +1,9 @@
-#include <AxeFxControl.h>
-#include <Timer.h>
 #include "Hardware.h"
 #include "InputManager.h"
 #include "Leds.h"
 #include "Screen.h"
+#include <AxeFxControl.h>
+#include <Timer.h>
 
 AxeSystem axe;
 Screen screen;
@@ -17,9 +17,9 @@ void setup() {
 
   leds.init();
 
-  #ifdef DEBUG
+#ifdef DEBUG
   Serial.begin(9600);
-  #endif
+#endif
 
   axe.begin(Serial1);
   axe.registerPresetChangeCallback(onPresetChange);
@@ -27,13 +27,11 @@ void setup() {
   axe.registerTunerStatusCallback(onTunerStatus);
   axe.registerTunerDataCallback(onTunerData);
   axe.registerTapTempoCallback(onTapTempo);
-	// axe.registerEffectFilterCallback(onEffectFilter);
   axe.enableRefresh();
   axe.refresh(true);
 
-  // input.registerLayoutChangeCallback(onLayoutChange);
+  input.registerLayoutChangeCallback(onLayoutChange);
   input.init(axe, leds, screen);
-
 }
 
 void loop() {
@@ -48,21 +46,11 @@ void onTapTempo() {
   timer.after(TAP_TEMPO_LED_DURATION, turnOffTapTempoLed);
 }
 
-void turnOffTapTempoLed() {
-  leds.off(Leds::TAP_TEMPO_LED);
-}
-
-bool onEffectFilter(const PresetNumber number, AxeEffect effect) {
-	return input.getLayout()->filterEffect(number, effect);
-}
-
-void onLayoutChange(LayoutInterface *layout) {
-  screen.displayLayout(layout);
-}
-
+void turnOffTapTempoLed() { leds.off(Leds::TAP_TEMPO_LED); }
+void onLayoutChange(LayoutInterface *layout) { screen.displayLayout(layout); }
 void onPresetChange(AxePreset preset) {
   input.getLayout()->reset();
-	screen.displayPreset(preset);
+  screen.displayPreset(preset);
   screen.displayLayout(input.getLayout());
 }
 
@@ -71,9 +59,8 @@ void onSystemChange() {
   screen.displayFirmwareVersion(axe.getFirmwareVersion());
   screen.displayLayout(input.getLayout());
 }
-
 void onTunerStatus(bool engaged) {
-	engaged ? leds.on(Leds::MODE_TUNER_LED) : leds.dim(Leds::MODE_TUNER_LED);
+  engaged ? leds.on(Leds::MODE_TUNER_LED) : leds.dim(Leds::MODE_TUNER_LED);
   screen.setTunerMode(engaged);
 }
 

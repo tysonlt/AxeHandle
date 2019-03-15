@@ -12,13 +12,17 @@
 #define TFT_DC 9
 #define TFT_RST 8
 
+#define BUTTON1_PIN 23
+
+/*
 #define MUX0_PIN0 2
 #define MUX0_PIN1 3
 #define MUX0_PIN2 4
 #define MUX0_PIN3 5
 #define MUX0_SIG_PIN 6
+*/
 
-#define DEFAULT_DEBOUNCE 100
+#define DEFAULT_DEBOUNCE 25
 
 #define BUTTON_SHORT_HOLD_MILLIS 200
 #define BUTTON_HOLD_MILLIS 500

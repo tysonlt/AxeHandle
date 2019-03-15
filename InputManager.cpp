@@ -22,12 +22,10 @@ void InputManager::init(AxeSystem& axe, Leds& leds, Screen& screen) {
 
   _layoutType = Pedals;
 
-  _mux.setPins(MUX0_PIN0, MUX0_PIN1, MUX0_PIN2, MUX0_PIN3);
-  pinMode(MUX0_SIG_PIN, INPUT_PULLUP);
-
   for (byte i=0; i<NUM_BUTTONS; i++) {
-    _buttons[i].setPin(MUX0_SIG_PIN);
-    _buttons[i].setMultiplexer(&_mux, i);
+    byte pin = BUTTON1_PIN - i;
+    pinMode(pin, INPUT_PULLUP);
+    _buttons[i].setPin(pin);
     _buttons[i].setDebounceTime(BUTTON_DEBOUNCE[i]);
     _buttons[i].setInverted(BUTTON_INVERTED[i]);
     _buttons[i].setPullupEnable(BUTTON_PULLUP[i]);

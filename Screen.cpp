@@ -124,61 +124,20 @@ void Screen::displayPreset(AxePreset preset) {
     printText(buf, SCENE_NUMBER, OPTION_INVERT);
     preset.copySceneName(buf, szScene);
     printText(buf, SCENE_TITLE, OPTION_WRAP);
-
-    if (_forceNextDisplay || preset.effectsChanged(_lastPreset)) {
-      // displayEffects(preset);
-    }
   }
 
   _lastPreset = preset;
 }
 
-void Screen::displayEffects(AxePreset preset) {
-
-  if (_tunerEngaged)
+void Screen::displayLayout(LayoutInterface *layout) {
+  if (_booting || _tunerEngaged)
     return;
 
-  size_t sz = 5;
+  const size_t sz = 13;
   char buf[sz];
-  FontSize fontSize = FONT(EFFECTS);
+  snprintf(buf, sz, "%11s", layout->getName());
+  printText(buf, LAYOUT);
 
-  ScreenPoint p = POS(EFFECTS);
-  byte padding = 5;
-  byte originalX = p.x;
-  byte badgeWidth = (CHAR_W * fontSize * (sz - 1)) + padding;
-  byte effectsPerLine = width() / badgeWidth;
-  byte maxEffects = effectsPerLine * 2;
-  bool firstLine = true;
-
-  // clear previous
-  fillRect(p, {width(), (unsigned)(padding + CHAR_H * fontSize * 2)}, COLOUR_BACKGROUND);
-
-  for (byte i = 0, displayCount = 0; i < preset.getEffectCount() && displayCount < maxEffects; i++) {
-
-    AxeEffect effect = preset.getEffectAt(i);
-    effect.copyEffectTag(buf, sz);
-
-    printText(buf, p, fontSize, COLR(EFFECTS), effect.isBypassed() ? OPTION_BORDER : OPTION_INVERT);
-    displayCount++;
-    if (firstLine && displayCount >= effectsPerLine) {
-      firstLine = false;
-      p.x = originalX;
-      p.y += fontSize * CHAR_H + padding - 2;
-    } else {
-      p.x += badgeWidth;
-    }
-  }
-}
-
-void Screen::displayLayout(LayoutInterface *layout) {
-  /*
-    if (_booting || _tunerEngaged) return;
-
-          const size_t sz = 13;
-          char buf[sz];
-          snprintf(buf, sz, "%11s", layout->getName());
-    printText(buf, LAYOUT);
-  */
   _lastLayout = layout;
 }
 
