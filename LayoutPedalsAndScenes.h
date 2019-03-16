@@ -11,19 +11,22 @@ class LayoutPedalsAndScenes : public LayoutInterface {
 public:
   const char *getName() { return "Scene/Pedal"; }
 
-  void reset() { updateEffectLeds(); }
+  void reset() { 
+    updateEffectLeds(); 
+    turnOnSceneLed( _axe->getCurrentPreset().getSceneNumber() );
+  }
 
 protected:
   enum Buttons {
     PresetSceneUp,   // 0
-    Drive1,          // 1
-    Delay1,          // 2
-    Wah1,            // 3
+    Scene1,          // 1
+    Scene2,          // 2
+    Scene3,          // 3
     ModeTuner,       // 4
     PresetSceneDown, // 5
-    Scene1,          // 6
-    Scene2,          // 7
-    Scene3,          // 8
+    Drive1,          // 6
+    Delay1,          // 7
+    Wah1,            // 8
     Tap              // 9
   };
 
@@ -58,7 +61,8 @@ protected:
 
       if (index >= Scene1 && index <= Scene3) {
         if (PRESS) {
-          _axe->sendSceneChange(index - 5);
+          _axe->sendSceneChange(index);
+          turnOnSceneLed(index);
           return true;
         }
       } else {
@@ -81,6 +85,15 @@ private:
       }
     }
     return false;
+  }
+
+  void turnOnSceneLed(SceneNumber scene) {
+    _leds->dim(1);
+    _leds->dim(2);
+    _leds->dim(3);
+    if (scene <= 3) {
+      _leds->on(scene);
+    }
   }
 
   void updateEffectLeds() {

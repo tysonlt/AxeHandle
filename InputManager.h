@@ -8,9 +8,9 @@
 #include "Leds.h"
 
 enum LayoutType {
+  PedalsAndScenes,
   Pedals,
   Scenes,
-  PedalsAndScenes,
 	// Midi,
   //Looper,
   //KitchenSink,
