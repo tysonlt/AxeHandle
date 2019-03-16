@@ -27,14 +27,15 @@ public:
   }
 
 protected:
-  static const byte BUTTON_TAP = 9;
-  static const byte BUTTON_MODE_TUNER = 4;
+  static const byte BUTTON_INDEX_TAP = 9;
+  static const byte BUTTON_INDEX_MODE_TUNER = 4;
 
   LayoutInterface(AxeSystem *axe, InputManager *input, Leds *leds, Screen *screen) {
     _axe = axe;
     _input = input;
     _leds = leds;
     _screen = screen;
+    _leds->dimAll();
   }
 
   virtual bool readButton(const byte index, Button &button) = 0;
@@ -67,13 +68,13 @@ private:
 
     switch (index) {
 
-    case BUTTON_TAP:
+    case BUTTON_INDEX_TAP:
       if (PRESS) {
         _axe->sendTap();
       }
       return true;
 
-    case BUTTON_MODE_TUNER:
+    case BUTTON_INDEX_MODE_TUNER:
 
       if (_axe->isTunerEngaged()) {
         if (PRESS) {

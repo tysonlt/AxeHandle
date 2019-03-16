@@ -10,6 +10,7 @@
 enum LayoutType {
   Pedals,
   Scenes,
+  PedalsAndScenes,
 	// Midi,
   //Looper,
   //KitchenSink,

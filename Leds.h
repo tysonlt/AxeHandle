@@ -21,10 +21,8 @@ public:
   void update();
 
 private:
-  static const unsigned LED_ON = 4095;
+  static const unsigned LED_ON = 255;
   static const unsigned LED_OFF = 0;
-
-  void doChase(const byte number);
 
   bool _dirty = false;
   

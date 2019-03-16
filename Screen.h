@@ -55,7 +55,7 @@ private:
   constexpr static int8_t TUNER_MAX = TUNER_CENTRE + TUNER_RESOLUTION;
   const static byte TUNER_ARROW_HEIGHT = 25;
   const static byte TUNER_GRID_HEIGHT = 30;
-  const static byte TUNER_GRID_GAP = 3;
+  const static byte TUNER_GRID_GAP = 0; //3;
 
   // Basic colours
   const static Colour BLACK = 0x0000;

@@ -27,11 +27,12 @@ void setup() {
   axe.registerTunerStatusCallback(onTunerStatus);
   axe.registerTunerDataCallback(onTunerData);
   axe.registerTapTempoCallback(onTapTempo);
-  axe.enableRefresh();
+  axe.enableRefresh(AXE_REFRESH_RATE);
   axe.refresh(true);
 
   input.registerLayoutChangeCallback(onLayoutChange);
   input.init(axe, leds, screen);
+
 }
 
 void loop() {
@@ -46,8 +47,14 @@ void onTapTempo() {
   timer.after(TAP_TEMPO_LED_DURATION, turnOffTapTempoLed);
 }
 
-void turnOffTapTempoLed() { leds.off(Leds::TAP_TEMPO_LED); }
-void onLayoutChange(LayoutInterface *layout) { screen.displayLayout(layout); }
+void turnOffTapTempoLed() { 
+  leds.off(Leds::TAP_TEMPO_LED); 
+}
+
+void onLayoutChange(LayoutInterface *layout) { 
+  screen.displayLayout(layout); 
+}
+
 void onPresetChange(AxePreset preset) {
   input.getLayout()->reset();
   screen.displayPreset(preset);
@@ -59,6 +66,7 @@ void onSystemChange() {
   screen.displayFirmwareVersion(axe.getFirmwareVersion());
   screen.displayLayout(input.getLayout());
 }
+
 void onTunerStatus(bool engaged) {
   engaged ? leds.on(Leds::MODE_TUNER_LED) : leds.dim(Leds::MODE_TUNER_LED);
   screen.setTunerMode(engaged);

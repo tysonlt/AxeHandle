@@ -2,9 +2,7 @@
 #include <SC_Button.h>
 #include "InputManager.h"
 #include "LayoutScenes.h"
-#include "LayoutLooper.h"
-#include "LayoutMidi.h"
-#include "LayoutKitchenSink.h"
+#include "LayoutPedalsAndScenes.h"
 #include "LayoutPedals.h"
 
 void InputManager::init(AxeSystem& axe, Leds& leds, Screen& screen) {
@@ -16,6 +14,7 @@ void InputManager::init(AxeSystem& axe, Leds& leds, Screen& screen) {
 	
   _layouts[Pedals] = new LayoutPedals(_axe, this, _leds, &screen);
   _layouts[Scenes] = new LayoutScenes(_axe, this, _leds, &screen);
+  _layouts[PedalsAndScenes] = new LayoutPedalsAndScenes(_axe, this, _leds, &screen);
 	// _layouts[Midi]   = new LayoutMidi(_axe, this, _leds);
   // _layouts[Looper] = new LayoutLooper(_axe, this, _leds);
   // _layouts[KitchenSink] = new LayoutKitchenSink(_axe, this, _leds);
@@ -23,7 +22,7 @@ void InputManager::init(AxeSystem& axe, Leds& leds, Screen& screen) {
   _layoutType = Pedals;
 
   for (byte i=0; i<NUM_BUTTONS; i++) {
-    byte pin = BUTTON1_PIN - i;
+    byte pin = BUTTON1_PIN + i;
     pinMode(pin, INPUT_PULLUP);
     _buttons[i].setPin(pin);
     _buttons[i].setDebounceTime(BUTTON_DEBOUNCE[i]);

@@ -22,32 +22,7 @@ void Screen::setTunerMode(bool enabled) {
   }
 }
 
-void Screen::drawTunerGrid() {
-
-  const byte points = (TUNER_RESOLUTION * 2) + 2;
-  const byte gap = TUNER_GRID_GAP;
-  const byte h = TUNER_GRID_HEIGHT;
-  const Colour bright = COLR(TUNER_FINETUNE);
-  const Colour dark = DARK_GREEN;
-
-  ScreenPoint p = POS(TUNER_DISPLAY);
-  Colour c = bright;
-  byte stretch = 0;
-
-  for (byte i = 0; i <= points; i++) {
-    c = bright;
-    stretch = 0;
-    if (i % 10) {
-      c = dark;
-    } else if (i == points / 2) {
-      stretch = 6;
-    } else {
-      stretch = 1;
-    }
-    _tft.drawFastVLine(p.x, p.y - stretch, h + (stretch * 2), c);
-    p.x += gap;
-  }
-}
+void Screen::drawTunerGrid() {}
 
 // Assumes screen has already been cleared
 void Screen::displayTunerData(const char *note, const byte string, const byte fineTune) {
@@ -66,8 +41,8 @@ void Screen::displayTunerData(const char *note, const byte string, const byte fi
   printText(buf, TUNER_FINETUNE);
 
   byte offset = TUNER_GRID_GAP * 3;
-  unsigned width = TUNER_RESOLUTION * TUNER_GRID_GAP * 2;
-  unsigned x, y = p.y + TUNER_GRID_HEIGHT + 10;
+  unsigned width = _tft.width() - 10;
+  unsigned x, y = p.y;
   if (fineTune != _lastFineTune) {
     x = map(_lastFineTune, TUNER_MIN, TUNER_MAX, p.x, width);
     fillTriangle({x + offset, y}, TUNER_ARROW_HEIGHT, COLOUR_BACKGROUND);
@@ -99,7 +74,15 @@ void Screen::drawBootSplash() {
   printText("Connecting...", SPLASH);
 }
 
-void Screen::displayTempo(Tempo tempo) {}
+void Screen::displayTempo(Tempo tempo) {
+  char buf[50];
+  if (_tunerEngaged)
+    return;
+  checkBooted();
+  snprintf(buf, getMaxCharsPerLine() + 1, "%d BPM   ", tempo);
+  printText(buf, TEMPO);
+  _lastTempo = tempo;
+}
 
 void Screen::displayPreset(AxePreset preset) {
 
@@ -112,6 +95,7 @@ void Screen::displayPreset(AxePreset preset) {
   checkBooted();
 
   drawLine(POS(HEADER_LINE), COLR(PRESET_NUMBER));
+  drawLine(POS(FOOTER_LINE), COLR(FOOTER_LINE));
 
   if (_forceNextDisplay || !preset.equals(_lastPreset)) {
 
@@ -253,7 +237,7 @@ ScreenPoint Screen::POS(ElementPosition pos) {
   case TUNER_FINETUNE:
     return {width() / 2 - currentFont * CHAR_W * 2, height() / 2 - (currentFont * CHAR_W) / 2};
   case TUNER_DISPLAY:
-    return {10, (height() / 3) * 2};
+    return {10, ((height() / 3) * 2)};
   case FOOTER_LINE:
     return {0, (unsigned)(POS(FOOTER).y - 5)};
   case TEMPO:
