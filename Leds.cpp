@@ -38,5 +38,5 @@ void Leds::clear() {
 void Leds::update() {}
 
 void Leds::chase() {
-  // ShiftPWM.OneByOneFast();
+  ShiftPWM.SetAll(LED_ON);
 }
