@@ -4,6 +4,7 @@
 #include "LayoutScenes.h"
 #include "LayoutPedalsAndScenes.h"
 #include "LayoutPedals.h"
+#include "LayoutPresets.h"
 
 void InputManager::init(AxeSystem& axe, Leds& leds, Screen& screen) {
   
@@ -15,6 +16,7 @@ void InputManager::init(AxeSystem& axe, Leds& leds, Screen& screen) {
   _layouts[PedalsAndScenes] = new LayoutPedalsAndScenes(_axe, this, _leds, &screen);
   _layouts[Pedals] = new LayoutPedals(_axe, this, _leds, &screen);
   _layouts[Scenes] = new LayoutScenes(_axe, this, _leds, &screen);
+  _layouts[Presets] = new LayoutPresets(_axe, this, _leds, &screen);
 	// _layouts[Midi]   = new LayoutMidi(_axe, this, _leds);
   // _layouts[Looper] = new LayoutLooper(_axe, this, _leds);
   // _layouts[KitchenSink] = new LayoutKitchenSink(_axe, this, _leds);

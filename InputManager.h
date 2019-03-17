@@ -9,6 +9,7 @@
 
 enum LayoutType {
   PedalsAndScenes,
+  Presets,
   Pedals,
   Scenes,
 	// Midi,
