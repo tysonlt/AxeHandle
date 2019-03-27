@@ -9,7 +9,7 @@ class LayoutMidi : public LayoutInterface {
   friend class InputManager;
 
 public:
-  const char *getName() { return "MIDI"; }
+  const char *getName() { return "MIDI:CC"; }
 
 protected:
   enum Buttons {
@@ -43,9 +43,12 @@ protected:
 
     if (cc > -1) {
       _axe->sendControlChange(cc, data, _axe->getMidiChannel());
+      _leds->dimAll();
+      _leds->on(index);
       return true;
     }
 
     return false;
   }
+
 };

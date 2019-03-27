@@ -5,6 +5,8 @@
 #include "LayoutPedalsAndScenes.h"
 #include "LayoutPedals.h"
 #include "LayoutPresets.h"
+#include "LayoutMidi.h"
+#include "LayoutLooper.h"
 
 void InputManager::init(AxeSystem& axe, Leds& leds, Screen& screen) {
   
@@ -17,9 +19,8 @@ void InputManager::init(AxeSystem& axe, Leds& leds, Screen& screen) {
   _layouts[Pedals] = new LayoutPedals(_axe, this, _leds, &screen);
   _layouts[Scenes] = new LayoutScenes(_axe, this, _leds, &screen);
   _layouts[Presets] = new LayoutPresets(_axe, this, _leds, &screen);
-	// _layouts[Midi]   = new LayoutMidi(_axe, this, _leds);
-  // _layouts[Looper] = new LayoutLooper(_axe, this, _leds);
-  // _layouts[KitchenSink] = new LayoutKitchenSink(_axe, this, _leds);
+  _layouts[Midi] = new LayoutMidi(_axe, this, _leds, &screen);
+  _layouts[Looper] = new LayoutLooper(_axe, this, _leds, &screen);
 
   _layoutType = PedalsAndScenes;
 
@@ -49,10 +50,6 @@ bool InputManager::update() {
 
 }
 
-void InputManager::nextLayout() {
-  setLayoutType( static_cast<LayoutType>((_layoutType + 1) % __NUM_LAYOUT_TYPES) );
-}
-
 void InputManager::setLayoutType(LayoutType layout) { 
   _layoutType = layout; 
 	getLayout()->reset();
@@ -63,4 +60,8 @@ void InputManager::callLayoutChangeCallback() {
   if (NULL != _layoutChangeCallback) {
     (_layoutChangeCallback)(getLayout());
   }
+}
+
+void InputManager::nextLayout() {
+  setLayoutType( static_cast<LayoutType>((_layoutType + 1) % __NUM_LAYOUT_TYPES) );
 }

@@ -39,7 +39,6 @@ void loop() {
   timer.update();
   input.update();
   axe.update();
-  leds.update();
 }
 
 void onTapTempo() {

@@ -129,21 +129,4 @@ private:
     }
   }
 
-  int getEffectOrder(const EffectId effectId) {
-    switch (effectId) {
-    case ID_FUZZ1:
-      return 1;
-    case ID_FUZZ2:
-      return 2;
-    case ID_DELAY1:
-      return 3;
-    case ID_DELAY2:
-      return 4;
-    case ID_WAH1:
-      return 5;
-    case ID_CHORUS1:
-      return 6;
-    }
-    return 0;
-  }
 };

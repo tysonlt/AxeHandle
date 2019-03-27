@@ -13,17 +13,15 @@ public:
 
   void on(const byte number);
   void off(const byte number);
-  void dim(const byte number, const byte brightness = 16);
-  void dimAll(const byte brightness = 16);
+  void dim(const byte number, const byte brightness = LED_DIM);
+  void dimAll(const byte brightness = LED_DIM);
   void chase();
 
   void clear();
-  void update();
 
 private:
   static const unsigned LED_ON = 255;
   static const unsigned LED_OFF = 0;
+  static const unsigned LED_DIM = 16;
 
-  bool _dirty = false;
-  
 };

@@ -12,9 +12,8 @@ enum LayoutType {
   Presets,
   Pedals,
   Scenes,
-	// Midi,
-  //Looper,
-  //KitchenSink,
+	Midi,
+  Looper,
   __NUM_LAYOUT_TYPES
 };
 
