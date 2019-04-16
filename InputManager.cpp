@@ -7,14 +7,35 @@
 #include "LayoutPresets.h"
 #include "LayoutMidi.h"
 #include "LayoutLooper.h"
+#include "LayoutUser.h"
+#include "LayoutSetup.h"
+
+void InputManager::checkSetupMode() {
+
+  #ifdef TESTING_SETUP
+  _setupMode = true;
+  while (true) update();
+  #endif
+
+  for (byte i=0; i<NUM_BUTTONS; i++) {
+    if (_buttons[i].isPressed()) {
+      _setupMode = true;
+      while (true) update();
+    }
+  }
+  
+}
 
 void InputManager::init(AxeSystem& axe, Leds& leds, Screen& screen) {
   
   _axe = &axe;
   _leds = &leds;
 
-	_leds->dim(Leds::MODE_TUNER_LED);
-	
+  _leds->dim(Leds::MODE_TUNER_LED);
+
+  _layoutSetup = new LayoutSetup(_axe, this, _leds, &screen);
+
+  _layouts[User] = new LayoutUser(_axe, this, _leds, &screen);
   _layouts[PedalsAndScenes] = new LayoutPedalsAndScenes(_axe, this, _leds, &screen);
   _layouts[Pedals] = new LayoutPedals(_axe, this, _leds, &screen);
   _layouts[Scenes] = new LayoutScenes(_axe, this, _leds, &screen);
@@ -24,10 +45,12 @@ void InputManager::init(AxeSystem& axe, Leds& leds, Screen& screen) {
 
   _layoutType = PedalsAndScenes;
 
+  _mux.setPins(MUX0_PIN0, MUX0_PIN1, MUX0_PIN2, MUX0_PIN3);
+
   for (byte i=0; i<NUM_BUTTONS; i++) {
-    byte pin = BUTTON1_PIN + i;
-    pinMode(pin, INPUT_PULLUP);
-    _buttons[i].setPin(pin);
+    pinMode(MUX0_SIG_PIN, INPUT_PULLUP);
+    _buttons[i].setPin(MUX0_SIG_PIN);
+    _buttons[i].setMultiplexer(&_mux, i);
     _buttons[i].setDebounceTime(BUTTON_DEBOUNCE[i]);
     _buttons[i].setInverted(BUTTON_INVERTED[i]);
     _buttons[i].setPullupEnable(BUTTON_PULLUP[i]);
@@ -37,7 +60,6 @@ void InputManager::init(AxeSystem& axe, Leds& leds, Screen& screen) {
 }
 
 bool InputManager::update() {
-
   bool changed = false;
   for (byte i=0; i<NUM_BUTTONS; i++) {
     _buttons[i].read();
@@ -45,9 +67,16 @@ bool InputManager::update() {
       changed = true;
     }
   }
-
   return changed;
 
+}
+
+LayoutInterface* InputManager::getLayout() { 
+  if (_setupMode) {
+    return _layoutSetup;
+  } else {
+    return _layouts[_layoutType]; 
+  }
 }
 
 void InputManager::setLayoutType(LayoutType layout) { 
@@ -63,5 +92,5 @@ void InputManager::callLayoutChangeCallback() {
 }
 
 void InputManager::nextLayout() {
-  setLayoutType( static_cast<LayoutType>((_layoutType + 1) % __NUM_LAYOUT_TYPES) );
+  setLayoutType( static_cast<LayoutType>( (_layoutType + 1) % __NUM_LAYOUT_TYPES) );
 }
