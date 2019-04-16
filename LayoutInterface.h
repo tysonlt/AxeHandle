@@ -19,7 +19,7 @@ public:
   virtual const char *getName() = 0;
   virtual void reset() = 0;
 
-  bool read(const byte index, Button &button) {
+  virtual bool read(const byte index, Button &button) {
     if (processStandardButtons(index, button)) {
       return true;
     }
@@ -27,6 +27,8 @@ public:
   }
 
 protected:
+  static const byte BUTTON_INDEX_PRESET_UP = 0;
+  static const byte BUTTON_INDEX_PRESET_DOWN = 5;
   static const byte BUTTON_INDEX_TAP = 9;
   static const byte BUTTON_INDEX_MODE_TUNER = 4;
 
@@ -64,33 +66,55 @@ protected:
   bool _holdState[NUM_BUTTONS] = {false};
 
 private:
+
   bool processStandardButtons(const byte index, Button &button) {
 
     switch (index) {
 
-    case BUTTON_INDEX_TAP:
-      if (PRESS) {
-        _axe->sendTap();
-      }
-      return true;
-
-    case BUTTON_INDEX_MODE_TUNER:
-
-      if (_axe->isTunerEngaged()) {
+      case BUTTON_INDEX_TAP:
         if (PRESS) {
-          _axe->toggleTuner();
+          _axe->sendTap();
+          return true;
         }
-      } else {
-        if (HOLD) {
-          _axe->enableTuner();
-        } else if (RELEASE) {
-          _input->nextLayout();
-        }
-      }
+        break;
 
-      return true;
+      /*
+      case BUTTON_INDEX_PRESET_UP:
+        if (HOLD) {
+          _axe->sendPresetIncrement();
+          return true;
+        }
+        break;
+
+      case BUTTON_INDEX_PRESET_DOWN:
+        if (HOLD) {
+          _axe->sendPresetDecrement();
+          return true;
+        }
+        break;
+      */
+
+      case BUTTON_INDEX_MODE_TUNER:
+
+        if (_axe->isTunerEngaged()) {
+          if (PRESS) {
+            _axe->disableTuner();
+            return true;
+          }
+        } else {
+          if (HOLD_SHORT) {
+            _input->nextLayout();
+            return true;
+          } else if (RELEASE) {
+            _axe->enableTuner();
+            return true;
+          }
+        }
+
     };
 
     return false;
+
   }
+
 };
