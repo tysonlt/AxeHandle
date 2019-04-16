@@ -30,7 +30,8 @@ enum ElementPosition {
   TUNER_FINETUNE,
   TUNER_DISPLAY,
   LAYOUT,
-  SPLASH
+  SPLASH,
+  SETUP
 };
 
 class Screen {
@@ -46,7 +47,6 @@ public:
   void setTunerMode(bool enabled);
   void displayTunerData(const char *note, const byte string, const byte fineTune);
 
-private:
   const static byte SCREEN_ROTATION = 1;
   const static byte MAX_CHARS_PER_LINE = 26;
   const static byte TUNER_CENTRE = 63;
@@ -119,6 +119,8 @@ private:
 
   unsigned int rainbow(byte value);
 
+private:
+
   bool _booting = false;
   bool _tunerEngaged = false;
   bool _forceNextDisplay = false;
@@ -127,4 +129,5 @@ private:
   Tempo _lastTempo;
   LayoutInterface *_lastLayout = nullptr;
   ST7735_t3 _tft = ST7735_t3(TFT_CS, TFT_DC, TFT_RST);
+  
 };
