@@ -2,6 +2,7 @@
 #include "InputManager.h"
 #include "Leds.h"
 #include "Screen.h"
+#include "Setup.h"
 #include <AxeFxControl.h>
 #include <Timer.h>
 
@@ -15,11 +16,15 @@ void setup() {
 
   screen.init();
 
-  leds.init();
+  leds.init(NUM_LEDS, NUM_PWM_CHIPS);
 
-#ifdef DEBUG
+  #ifdef DEBUG
   Serial.begin(9600);
-#endif
+  #endif
+
+  input.registerLayoutChangeCallback(onLayoutChange);
+  input.init(axe, leds, screen);
+  input.checkSetupMode();
 
   axe.begin(Serial1);
   axe.registerPresetChangeCallback(onPresetChange);
@@ -29,9 +34,6 @@ void setup() {
   axe.registerTapTempoCallback(onTapTempo);
   axe.enableRefresh(AXE_REFRESH_RATE);
   axe.refresh(true);
-
-  input.registerLayoutChangeCallback(onLayoutChange);
-  input.init(axe, leds, screen);
 
 }
 
