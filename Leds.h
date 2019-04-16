@@ -7,9 +7,11 @@ class Leds {
 public:
   static const byte MODE_TUNER_LED = 4;
   static const byte TAP_TEMPO_LED = 9;
-  static const byte NUM_LEDS = 10;
+  static const unsigned LED_ON = 255;
+  static const unsigned LED_OFF = 0;
+  static const unsigned LED_DIM = 16;
 
-  void init();
+  void init(const byte numLeds, const byte numChips);
 
   void on(const byte number);
   void off(const byte number);
@@ -19,9 +21,12 @@ public:
 
   void clear();
 
+  byte getLedCount() { return _numLeds; }
+  byte getChipCount() { return _numChips; }
+
 private:
-  static const unsigned LED_ON = 255;
-  static const unsigned LED_OFF = 0;
-  static const unsigned LED_DIM = 16;
+
+  byte _numLeds;
+  byte _numChips;
 
 };

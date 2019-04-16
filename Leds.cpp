@@ -9,8 +9,10 @@ static const bool ShiftPWM_invertOutputs = ShiftPWM_INVERT_OUTPUT;
 static const bool ShiftPWM_balanceLoad = ShiftPWM_BALANCE_LOAD;
 #include <ShiftPWM.h>   
 
-void Leds::init() {
-  ShiftPWM.SetAmountOfRegisters(2);
+void Leds::init(const byte numLeds, const byte numChips) {
+  _numLeds = numLeds;
+  _numChips = numChips;
+  ShiftPWM.SetAmountOfRegisters(_numChips);
   ShiftPWM.Start(ShiftPWM_PWM_FREQUENCY, LED_ON);
   chase();
 }
