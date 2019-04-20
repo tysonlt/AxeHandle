@@ -33,15 +33,16 @@ protected:
   using LayoutInterface::LayoutInterface;
 
   bool readButton(const byte index, Button &button) {
-
+if (PRESS) Serial.println("LayoutPedalsAndScenes::readButton()");
       if (index >= Scene1 && index <= Scene4) {
+        byte scene = index + 1;
         if (HOLD) {
-          _axe->sendSceneChange(index + 5);
-          turnOnSceneLed(index); //reuse led
+          _axe->sendSceneChange(scene + 4);
+          turnOnSceneLed(scene); //reuse led
           return true;
         } else if (RELEASE) {
-          _axe->sendSceneChange(index + 1);
-          turnOnSceneLed(index);
+          _axe->sendSceneChange(scene);
+          turnOnSceneLed(scene);
           return true;
         }
       } else {
@@ -53,13 +54,15 @@ protected:
 
 private:
   bool processEffect(const byte index, Button &button) {
-    EffectId effectId = effectIdFor(index);
     if (PRESS) {
+      EffectId effectId = effectIdFor(index);
       if (AxeEffect *effect = _axe->getCurrentPreset().getEffectById(effectId)) {
+Serial.printf("EFFECTID: %d [fxptr: %lu]\n", effectId, effect->getEffectId());
         effect->toggle();
         updateEffectLeds();
         return true;
       }
+else Serial.printf("EFFECTID: %d SKIPPED\n", effectId);
     }
     return false;
   }
