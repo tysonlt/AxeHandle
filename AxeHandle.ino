@@ -1,8 +1,9 @@
+
+
 #include "Hardware.h"
 #include "InputManager.h"
 #include "Leds.h"
 #include "Screen.h"
-#include "Setup.h"
 #include <AxeFxControl.h>
 #include <Timer.h>
 
