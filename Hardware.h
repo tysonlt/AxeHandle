@@ -6,7 +6,7 @@
 #define P_ Serial.print
 #define PL_ Serial.println
 
-#define AXE_REFRESH_RATE 1500
+#define AXE_REFRESH_RATE 3000
 
 #define NUM_BUTTONS 10
 #define NUM_LEDS 10
@@ -23,17 +23,17 @@
 #define ShiftPWM_BALANCE_LOAD false
 #define ShiftPWM_PWM_FREQUENCY 75
 
-#define MUX0_PIN0 17
-#define MUX0_PIN1 18
-#define MUX0_PIN2 19
-#define MUX0_PIN3 20
-#define MUX0_SIG_PIN 21
+#define MUX0_PIN0 15
+#define MUX0_PIN1 16
+#define MUX0_PIN2 17
+#define MUX0_PIN3 18
+#define MUX0_SIG_PIN 19
 
 #define BUTTON1_PIN 14
 
-#define DEFAULT_DEBOUNCE 75
+#define DEFAULT_DEBOUNCE 25
 
-#define BUTTON_SHORT_HOLD_MILLIS 200
+#define BUTTON_SHORT_HOLD_MILLIS 350
 #define BUTTON_HOLD_MILLIS 500
 #define BUTTON_LONG_HOLD_MILLIS 900
 
