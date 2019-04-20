@@ -21,9 +21,12 @@ public:
 
   virtual bool read(const byte index, Button &button) {
     if (processStandardButtons(index, button)) {
+Serial.println("HANDLED");
       return true;
+    } else {
+if (PRESS) Serial.println("PASSING");      
+      return readButton(index, button);
     }
-    return readButton(index, button);
   }
 
 protected:
@@ -68,52 +71,40 @@ protected:
 private:
 
   bool processStandardButtons(const byte index, Button &button) {
+    
+    bool handled = false;
 
-    switch (index) {
-
-      case BUTTON_INDEX_TAP:
+    if (index == BUTTON_INDEX_TAP) {
+      
         if (PRESS) {
           _axe->sendTap();
-          return true;
+          handled = true;
         }
-        break;
+      
+    } else if (index == BUTTON_INDEX_MODE_TUNER) {
 
-      /*
-      case BUTTON_INDEX_PRESET_UP:
-        if (HOLD) {
-          _axe->sendPresetIncrement();
-          return true;
-        }
-        break;
-
-      case BUTTON_INDEX_PRESET_DOWN:
-        if (HOLD) {
-          _axe->sendPresetDecrement();
-          return true;
-        }
-        break;
-      */
-
-      case BUTTON_INDEX_MODE_TUNER:
+        //FIXME: logic busted
 
         if (_axe->isTunerEngaged()) {
           if (PRESS) {
+Serial.println("DISABLE TUNER");            
             _axe->disableTuner();
-            return true;
+            handled = true;
           }
         } else {
-          if (HOLD_SHORT) {
+          /*if (HOLD) {
             _input->nextLayout();
-            return true;
-          } else if (RELEASE) {
+            handled = true;
+          } else*/ if (PRESS) {
+Serial.println("ENABLE TUNER");            
             _axe->enableTuner();
-            return true;
+            handled = true;
           }
         }
 
-    };
+    }
 
-    return false;
+    return handled;
 
   }
 

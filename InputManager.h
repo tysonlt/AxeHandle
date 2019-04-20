@@ -7,13 +7,13 @@
 #include "Hardware.h"
 #include "Leds.h"
 
-#define TESTING_SETUP
+// #define TESTING_SETUP
 
 enum LayoutType {
   User,
   PedalsAndScenes,
-  Presets,
   Pedals,
+  Presets,
   Scenes,
 	Midi,
   Looper,
@@ -49,7 +49,7 @@ class InputManager {
     Button _buttons[NUM_BUTTONS];
     Multiplexer _mux;
     LayoutType _layoutType;
-    LayoutInterface *_layouts[__NUM_LAYOUT_TYPES];
+    LayoutInterface *_layouts[__NUM_LAYOUT_TYPES] = {};
     LayoutChangeCallback _layoutChangeCallback = NULL;
     LayoutInterface *_layoutSetup = nullptr;
 

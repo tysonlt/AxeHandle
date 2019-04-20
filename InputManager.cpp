@@ -35,13 +35,15 @@ void InputManager::init(AxeSystem& axe, Leds& leds, Screen& screen) {
 
   _layoutSetup = new LayoutSetup(_axe, this, _leds, &screen);
 
+  //FIXME: nextLayout() crashes if all are enabled... :/
+
   _layouts[User] = new LayoutUser(_axe, this, _leds, &screen);
   _layouts[PedalsAndScenes] = new LayoutPedalsAndScenes(_axe, this, _leds, &screen);
-  _layouts[Pedals] = new LayoutPedals(_axe, this, _leds, &screen);
+  // _layouts[Pedals] = new LayoutPedals(_axe, this, _leds, &screen);
+  // _layouts[Presets] = new LayoutPresets(_axe, this, _leds, &screen);
   _layouts[Scenes] = new LayoutScenes(_axe, this, _leds, &screen);
-  _layouts[Presets] = new LayoutPresets(_axe, this, _leds, &screen);
-  _layouts[Midi] = new LayoutMidi(_axe, this, _leds, &screen);
-  _layouts[Looper] = new LayoutLooper(_axe, this, _leds, &screen);
+  // _layouts[Midi] = new LayoutMidi(_axe, this, _leds, &screen);
+  // _layouts[Looper] = new LayoutLooper(_axe, this, _leds, &screen);
 
   _layoutType = PedalsAndScenes;
 
@@ -63,6 +65,8 @@ bool InputManager::update() {
   bool changed = false;
   for (byte i=0; i<NUM_BUTTONS; i++) {
     _buttons[i].read();
+// if (_buttons[i].wasPressed()) Serial.printf("---PRESS %d\n", i);    
+// if (_buttons[i].wasReleased()) Serial.printf("---RELSE %d\n", i);    
     if (getLayout()->read(i, _buttons[i])) {
       changed = true;
     }
@@ -92,5 +96,9 @@ void InputManager::callLayoutChangeCallback() {
 }
 
 void InputManager::nextLayout() {
-  setLayoutType( static_cast<LayoutType>( (_layoutType + 1) % __NUM_LAYOUT_TYPES) );
+  byte next = (_layoutType + 1) % __NUM_LAYOUT_TYPES;
+  while (nullptr == _layouts[next]) {
+    next = (next + 1) % __NUM_LAYOUT_TYPES;
+  }
+  setLayoutType( static_cast<LayoutType>(next) );
 }
