@@ -10,7 +10,9 @@ class LayoutScenes : public LayoutInterface {
 public:
   const char *getName() { return "Scenes"; }
 
-  void reset() { turnOnSceneLed(_axe->getCurrentPreset().getSceneNumber()); }
+  void reset() { 
+    turnOnSceneLed(_axe->getCurrentPreset().getSceneNumber()); 
+    }
 
 protected:
   enum Buttons {
