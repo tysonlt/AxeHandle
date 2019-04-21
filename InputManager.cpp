@@ -39,8 +39,8 @@ void InputManager::init(AxeSystem& axe, Leds& leds, Screen& screen) {
 
   _layouts[User] = new LayoutUser(_axe, this, _leds, &screen);
   _layouts[PedalsAndScenes] = new LayoutPedalsAndScenes(_axe, this, _leds, &screen);
-  // _layouts[Pedals] = new LayoutPedals(_axe, this, _leds, &screen);
-  // _layouts[Presets] = new LayoutPresets(_axe, this, _leds, &screen);
+  _layouts[Pedals] = new LayoutPedals(_axe, this, _leds, &screen);
+  _layouts[Presets] = new LayoutPresets(_axe, this, _leds, &screen);
   _layouts[Scenes] = new LayoutScenes(_axe, this, _leds, &screen);
   // _layouts[Midi] = new LayoutMidi(_axe, this, _leds, &screen);
   // _layouts[Looper] = new LayoutLooper(_axe, this, _leds, &screen);
@@ -72,7 +72,6 @@ bool InputManager::update() {
     }
   }
   return changed;
-
 }
 
 LayoutInterface* InputManager::getLayout() { 
@@ -96,9 +95,14 @@ void InputManager::callLayoutChangeCallback() {
 }
 
 void InputManager::nextLayout() {
+Serial.printf("\nCURRENT: %s\n", getLayout()->getName());
   byte next = (_layoutType + 1) % __NUM_LAYOUT_TYPES;
   while (nullptr == _layouts[next]) {
+Serial.printf("Skipping %d...\n", next);    
     next = (next + 1) % __NUM_LAYOUT_TYPES;
   }
+Serial.printf("Switch to %d\n", next);  
   setLayoutType( static_cast<LayoutType>(next) );
+Serial.println(getLayout()->getName());
 }
+
