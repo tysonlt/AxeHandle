@@ -1,5 +1,3 @@
-
-
 #include "Hardware.h"
 #include "InputManager.h"
 #include "Leds.h"
