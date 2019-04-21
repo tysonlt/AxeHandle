@@ -16,17 +16,44 @@
 class LayoutInterface {
 
 public:
+
   virtual const char *getName() = 0;
   virtual void reset() = 0;
 
   virtual bool read(const byte index, Button &button) {
-    if (processStandardButtons(index, button)) {
-Serial.println("HANDLED");
-      return true;
+    
+      if (index == BUTTON_INDEX_TAP) {
+      
+        if (PRESS) {
+          _axe->sendTap();
+          return true;
+        }
+      
+    } else if (index == BUTTON_INDEX_MODE_TUNER) {
+
+        if (_axe->isTunerEngaged()) {
+          if (RELEASE) {
+            _axe->disableTuner();
+            return true;
+          }
+        } else {
+          if (HOLD_SHORT) {
+            _input->nextLayout();
+            return true;
+          } else if (RELEASE) {
+            _axe->enableTuner();
+            return true;
+          }
+        }
+
     } else {
-if (PRESS) Serial.println("PASSING");      
+
       return readButton(index, button);
+
     }
+
+    return false;
+
   }
 
 protected:
@@ -45,67 +72,16 @@ protected:
 
   virtual bool readButton(const byte index, Button &button) = 0;
 
-  bool buttonHeld(Button &button, const byte index, const millis_t millis = BUTTON_HOLD_MILLIS) {
-    if (button.pressedFor(millis) && !_holdState[index]) {
-      _holdState[index] = true;
-      return true;
-    }
-    return false;
-  }
+  bool buttonHeld(Button &button, const byte index, const millis_t millis = BUTTON_HOLD_MILLIS); 
+  bool buttonReleased(Button &button, const byte index);
 
-  bool buttonReleased(Button &button, const byte index) {
-    bool released = button.wasReleased();
-    if (released && _holdState[index]) {
-      _holdState[index] = false;
-      return false;
-    }
-    return released;
-  }
+  #ifdef DEBUG
+  void dumpHoldState();
+  #endif
 
   AxeSystem *_axe = nullptr;
   InputManager *_input = nullptr;
   Leds *_leds = nullptr;
   Screen *_screen = nullptr;
-  bool _holdState[NUM_BUTTONS] = {false};
-
-private:
-
-  bool processStandardButtons(const byte index, Button &button) {
-    
-    bool handled = false;
-
-    if (index == BUTTON_INDEX_TAP) {
-      
-        if (PRESS) {
-          _axe->sendTap();
-          handled = true;
-        }
-      
-    } else if (index == BUTTON_INDEX_MODE_TUNER) {
-
-        //FIXME: logic busted
-
-        if (_axe->isTunerEngaged()) {
-          if (PRESS) {
-Serial.println("DISABLE TUNER");            
-            _axe->disableTuner();
-            handled = true;
-          }
-        } else {
-          /*if (HOLD) {
-            _input->nextLayout();
-            handled = true;
-          } else*/ if (PRESS) {
-Serial.println("ENABLE TUNER");            
-            _axe->enableTuner();
-            handled = true;
-          }
-        }
-
-    }
-
-    return handled;
-
-  }
 
 };
