@@ -33,6 +33,7 @@ protected:
   using LayoutInterface::LayoutInterface;
 
   bool readButton(const byte index, Button &button) {
+
 if (PRESS) Serial.println("LayoutPedalsAndScenes::readButton()");
       if (index >= Scene1 && index <= Scene4) {
         byte scene = index + 1;
