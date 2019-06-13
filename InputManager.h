@@ -10,11 +10,12 @@
 // #define TESTING_SETUP
 
 enum LayoutType {
-  User,
   PedalsAndScenes,
+  ScenesAndMidi,
   Pedals,
   Presets,
   Scenes,
+  User,
 	Midi,
   Looper,
   __NUM_LAYOUT_TYPES

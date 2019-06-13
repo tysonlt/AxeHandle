@@ -266,21 +266,6 @@ protected:
     }
   }
 
-  void debug() {
-    const size_t sz = 60;
-    char buf[sz];
-    PL_("\n--- EEPROM DUMP ---");
-    for (byte i=0; i<LayoutUser::ELEMENT_COUNT; i++) {
-      if (i == 4) continue;
-      memset(buf, 0, sz);
-      snprintf(buf, sz, "BUTTON %d [CMD: %03d, DATA1: %03d, DATA2: %03d, MODE: %03d]",
-        i, static_cast<int>(_assignments[i].command), _assignments[i].data1, _assignments[i].data2, _assignments[i].mode
-      );
-      PL_(buf);
-    }
-    PL_("------\n");
-  }
-
   void printCurrentData(const bool fullMode = false) {
 
     byte x = 0, y = LINE_HEIGHT;
@@ -479,6 +464,21 @@ private:
   void line(const char *text) {
     _screen->printText(text, {0, _p.y});
     _p.y += LINE_HEIGHT;
+  }
+
+  void debug() {
+    const size_t sz = 60;
+    char buf[sz];
+    PL_("\n--- EEPROM DUMP ---");
+    for (byte i=0; i<LayoutUser::ELEMENT_COUNT; i++) {
+      if (i == 4) continue;
+      memset(buf, 0, sz);
+      snprintf(buf, sz, "BUTTON %d [CMD: %03d, DATA1: %03d, DATA2: %03d, MODE: %03d]",
+        i, static_cast<int>(_assignments[i].command), _assignments[i].data1, _assignments[i].data2, _assignments[i].mode
+      );
+      PL_(buf);
+    }
+    PL_("------\n");
   }
 
   static const byte EMPTY = 255;

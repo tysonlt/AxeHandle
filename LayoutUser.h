@@ -29,10 +29,10 @@ enum ButtonMode {
 };
 
 struct ButtonAssignment {
-  Command command;
-  ButtonMode mode;
-  byte data1; //effect id, scene number, midi pc/cc 
-  byte data2; //cc value
+  u_int8_t command;
+  u_int8_t mode;
+  u_int8_t data1; //effect id, scene number, midi pc/cc 
+  u_int8_t data2; //cc value
 };
 
 class LayoutSetup;
@@ -46,22 +46,21 @@ public:
 
 protected:
 
-  LayoutUser(AxeSystem *axe, InputManager *input, Leds *leds, Screen *screen) : 
-  LayoutInterface(axe, input, leds, screen) {
+  using LayoutInterface::LayoutInterface;
 
-    //TODO: TEST load button assignments from eeprom
+  void reset() { 
+    _leds->dimAll(); 
     EEPROM.readBlock(EEPROM_ADDRESS, _buttonAssignments, ELEMENT_COUNT);
-
   }
 
-  void reset() { _leds->dimAll(); }
-
   bool readButton(const byte index, Button &button) {
+
+    //FIXME: gets random data from EEPROM after a few presses. A mystery.
 
     ButtonAssignment assignment = _buttonAssignments[index];
 
     if (checkButton(assignment.mode, index, button)) {
-    
+
       switch (assignment.command) {
 
         case PRESET_DOWN:
@@ -110,7 +109,7 @@ protected:
 
   }
 
-  bool checkButton(ButtonMode mode, const byte index, Button& button) {
+  bool checkButton(u_int8_t mode, const byte index, Button& button) {
     switch (mode) {
       case ON_RELEASE:
         return RELEASE;
@@ -124,6 +123,33 @@ protected:
         return PRESS;
     }
   }
+
+  void debug(ButtonAssignment assignment, const byte index) {
+    const size_t sz = 60;
+    char buf[sz];
+    Serial.println("\n--- EEPROM DUMP ---");
+    snprintf(buf, sz, "BUTTON %d [CMD: %03d, DATA1: %03d, DATA2: %03d, MODE: %03d]",
+      index, assignment.command, assignment.data1, assignment.data2, assignment.mode
+    );
+    Serial.println(buf);
+    Serial.println("------\n");
+  }
+
+  void debug() {
+    const size_t sz = 60;
+    char buf[sz];
+    PL_("\n--- EEPROM DUMP ---");
+    for (byte i=0; i<LayoutUser::ELEMENT_COUNT; i++) {
+      if (i == 4) continue;
+      memset(buf, 0, sz);
+      snprintf(buf, sz, "BUTTON %d [CMD: %03d, DATA1: %03d, DATA2: %03d, MODE: %03d]",
+        i, _buttonAssignments[i].command, _buttonAssignments[i].data1, _buttonAssignments[i].data2, _buttonAssignments[i].mode
+      );
+      PL_(buf);
+    }
+    PL_("------\n");
+  }
+
 
   static const int EEPROM_ADDRESS = 0;
   static const int ELEMENT_COUNT = 9; //index 4 (MODE) is ignored

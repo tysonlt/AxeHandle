@@ -18,12 +18,3 @@ bool LayoutInterface::buttonReleased(Button &button, const byte index) {
     }
     return released;
 }
-
-#ifdef DEBUG
-void LayoutInterface::dumpHoldState() {
-    Serial.println("\n===== HOLD STATE ====");
-    for (byte i=0; i<NUM_BUTTONS; i++) {
-        Serial.printf("%d:%d\n", i, _holdState[i]);
-    }
-}
-#endif

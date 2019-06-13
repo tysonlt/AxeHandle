@@ -17,9 +17,9 @@ void setup() {
 
   leds.init(NUM_LEDS, NUM_PWM_CHIPS);
 
-  #ifdef DEBUG
+#ifdef DEBUG
   Serial.begin(9600);
-  #endif
+#endif
 
   input.registerLayoutChangeCallback(onLayoutChange);
   input.init(axe, leds, screen);
@@ -33,12 +33,13 @@ void setup() {
   axe.registerTapTempoCallback(onTapTempo);
   axe.enableRefresh(AXE_REFRESH_RATE);
   axe.refresh(true);
-
 }
 
 void loop() {
   timer.update();
-  input.update();
+  if (input.update()) {
+    axe.refresh();
+  }
   axe.update();
 }
 
@@ -47,13 +48,9 @@ void onTapTempo() {
   timer.after(TAP_TEMPO_LED_DURATION, turnOffTapTempoLed);
 }
 
-void turnOffTapTempoLed() { 
-  leds.off(Leds::TAP_TEMPO_LED); 
-}
+void turnOffTapTempoLed() { leds.off(Leds::TAP_TEMPO_LED); }
 
-void onLayoutChange(LayoutInterface *layout) { 
-  screen.displayLayout(layout); 
-}
+void onLayoutChange(LayoutInterface *layout) { screen.displayLayout(layout); }
 
 void onPresetChange(AxePreset preset) {
   input.getLayout()->reset();

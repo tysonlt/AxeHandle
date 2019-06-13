@@ -42,7 +42,9 @@ protected:
 
   void turnOnPresetLed(PresetNumber preset) {
     _leds->dimAll();
-    _leds->on(presetToIndex(preset));
+    if (preset < 8) {
+      _leds->on(presetToIndex(preset));
+    }
   }
 
   PresetNumber indexToPreset(byte index) {
@@ -50,7 +52,7 @@ protected:
   }
 
   byte presetToIndex(PresetNumber preset) {
-    return preset < ModeTuner ? preset + 5 : preset - 4;
+    return preset < ModeTuner ? preset - 4 : preset + 5;
   }
 
 };

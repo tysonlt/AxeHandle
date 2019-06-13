@@ -9,6 +9,7 @@
 #include "LayoutLooper.h"
 #include "LayoutUser.h"
 #include "LayoutSetup.h"
+#include "LayoutScenesAndMidi.h"
 
 void InputManager::checkSetupMode() {
 
@@ -37,15 +38,10 @@ void InputManager::init(AxeSystem& axe, Leds& leds, Screen& screen) {
 
   //FIXME: nextLayout() crashes if all are enabled... :/
 
-  _layouts[User] = new LayoutUser(_axe, this, _leds, &screen);
-  _layouts[PedalsAndScenes] = new LayoutPedalsAndScenes(_axe, this, _leds, &screen);
-  _layouts[Pedals] = new LayoutPedals(_axe, this, _leds, &screen);
+  _layouts[ScenesAndMidi] = new LayoutScenesAndMidi(_axe, this, _leds, &screen);
   _layouts[Presets] = new LayoutPresets(_axe, this, _leds, &screen);
-  _layouts[Scenes] = new LayoutScenes(_axe, this, _leds, &screen);
-  // _layouts[Midi] = new LayoutMidi(_axe, this, _leds, &screen);
-  // _layouts[Looper] = new LayoutLooper(_axe, this, _leds, &screen);
 
-  _layoutType = PedalsAndScenes;
+  _layoutType = ScenesAndMidi;
 
   _mux.setPins(MUX0_PIN0, MUX0_PIN1, MUX0_PIN2, MUX0_PIN3);
 
@@ -65,8 +61,6 @@ bool InputManager::update() {
   bool changed = false;
   for (byte i=0; i<NUM_BUTTONS; i++) {
     _buttons[i].read();
-// if (_buttons[i].wasPressed()) Serial.printf("---PRESS %d\n", i);    
-// if (_buttons[i].wasReleased()) Serial.printf("---RELSE %d\n", i);    
     if (getLayout()->read(i, _buttons[i])) {
       changed = true;
     }
@@ -83,7 +77,9 @@ LayoutInterface* InputManager::getLayout() {
 }
 
 void InputManager::setLayoutType(LayoutType layout) { 
+// Serial.printf("InputManager::setLayoutType(%d -> ", _layoutType);  
   _layoutType = layout; 
+// Serial.printf("%d)\n", _layoutType);  
 	getLayout()->reset();
   callLayoutChangeCallback(); 
 }
@@ -95,14 +91,17 @@ void InputManager::callLayoutChangeCallback() {
 }
 
 void InputManager::nextLayout() {
-Serial.printf("\nCURRENT: %s\n", getLayout()->getName());
-  byte next = (_layoutType + 1) % __NUM_LAYOUT_TYPES;
+  byte max = arraySize(_layouts);
+// Serial.println("\nInputManager::nextLayout()");
+// Serial.printf("CURRENT: %d\n", _layoutType);
+  byte next = (_layoutType + 1) % max;
+// Serial.printf("Trying %d...\n", next);      
   while (nullptr == _layouts[next]) {
-Serial.printf("Skipping %d...\n", next);    
-    next = (next + 1) % __NUM_LAYOUT_TYPES;
+    next = (next + 1) % max;
+// Serial.printf("Trying %d...\n", next);    
   }
-Serial.printf("Switch to %d\n", next);  
+// Serial.printf("Setting to %d\n", next);  
   setLayoutType( static_cast<LayoutType>(next) );
-Serial.println(getLayout()->getName());
+// Serial.printf("NEW: %s\n\n", getLayout()->getName());
 }
 

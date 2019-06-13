@@ -75,10 +75,6 @@ protected:
   bool buttonHeld(Button &button, const byte index, const millis_t millis = BUTTON_HOLD_MILLIS); 
   bool buttonReleased(Button &button, const byte index);
 
-  #ifdef DEBUG
-  void dumpHoldState();
-  #endif
-
   AxeSystem *_axe = nullptr;
   InputManager *_input = nullptr;
   Leds *_leds = nullptr;
