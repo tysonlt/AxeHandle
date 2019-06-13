@@ -4,26 +4,29 @@
 #include "LayoutInterface.h"
 #include <SC_Button.h>
 
-class LayoutPedals : public LayoutInterface {
+class LayoutPedalsAndScenes : public LayoutInterface {
 
   friend class InputManager;
 
 public:
-  const char *getName() { return "Pedals"; }
+  const char *getName() { return "Scene/Pedal"; }
 
-  void reset() { updateEffectLeds(); }
+  void reset() { 
+    updateEffectLeds(); 
+    turnOnSceneLed( _axe->getCurrentPreset().getSceneNumber() );
+  }
 
 protected:
   enum Buttons {
-    PresetSceneUp,   // 0
-    Drive2,          // 1
-    Delay2,          // 2
-    Mod1,            // 3
+    Scene1,          // 0
+    Scene2,          // 1
+    Scene3,          // 2
+    Scene4,          // 3
     ModeTuner,       // 4
-    PresetSceneDown, // 5
-    Drive1,          // 6
-    Delay1,          // 7
-    Wah1,            // 8
+    Drive1,          // 5
+    Delay1,          // 6
+    Chorus1,         // 7 
+    Tremelo1,        // 8
     Tap              // 9
   };
 
@@ -31,39 +34,28 @@ protected:
 
   bool readButton(const byte index, Button &button) {
 
-    switch (index) {
-
-    case PresetSceneUp:
-      if (HOLD) {
-        _axe->sendPresetDecrement();
-        return true;
-      } else if (RELEASE) {
-        _axe->sendSceneDecrement();
-        return true;
+      if (index >= Scene1 && index <= Scene4) {
+        byte scene = index + 1;
+        if (HOLD) {
+          _axe->sendSceneChange(scene + 4);
+          turnOnSceneLed(scene); //reuse led
+          return true;
+        } else if (RELEASE) {
+          _axe->sendSceneChange(scene);
+          turnOnSceneLed(scene);
+          return true;
+        }
+      } else {
+        return processEffect(index, button);
       }
-      break;
-
-    case PresetSceneDown:
-      if (HOLD) {
-        _axe->sendPresetIncrement();
-        return true;
-      } else if (RELEASE) {
-        _axe->sendSceneIncrement();
-        return true;
-      }
-      break;
-
-    default:
-      return processEffect(index, button);
-    };
 
     return false;
   }
 
 private:
   bool processEffect(const byte index, Button &button) {
-    EffectId effectId = effectIdFor(index);
     if (PRESS) {
+      EffectId effectId = effectIdFor(index);
       if (AxeEffect *effect = _axe->getCurrentPreset().getEffectById(effectId)) {
         effect->toggle();
         updateEffectLeds();
@@ -73,13 +65,21 @@ private:
     return false;
   }
 
+  void turnOnSceneLed(SceneNumber scene) {
+    _leds->dim(0);
+    _leds->dim(1);
+    _leds->dim(2);
+    _leds->dim(3);
+    if (scene <= 4) {
+      _leds->on(scene - 1);
+    }
+  }
+
   void updateEffectLeds() {
     setEffectLedState(ID_FUZZ1);
-    setEffectLedState(ID_FUZZ2);
     setEffectLedState(ID_DELAY1);
-    setEffectLedState(ID_DELAY2);
-    setEffectLedState(ID_WAH1);
     setEffectLedState(ID_CHORUS1);
+    setEffectLedState(ID_TREMOLO1);
   }
 
   void setEffectLedState(const EffectId effectId) {
@@ -95,16 +95,12 @@ private:
     switch (index) {
     case Drive1:
       return ID_FUZZ1;
-    case Drive2:
-      return ID_FUZZ2;
     case Delay1:
       return ID_DELAY1;
-    case Delay2:
-      return ID_DELAY2;
-    case Wah1:
-      return ID_WAH1;
-    case Mod1:
+    case Chorus1:
       return ID_CHORUS1;
+    case Tremelo1:
+      return ID_TREMOLO1;
     default:
       return 0; // to stop compiler warnings
     }
@@ -114,16 +110,12 @@ private:
     switch (effectId) {
     case ID_FUZZ1:
       return Drive1;
-    case ID_FUZZ2:
-      return Drive2;
     case ID_DELAY1:
       return Delay1;
-    case ID_DELAY2:
-      return Delay2;
-    case ID_WAH1:
-      return Wah1;
     case ID_CHORUS1:
-      return Mod1;
+      return Chorus1;
+    case ID_TREMOLO1:
+      return Tremelo1;
     default:
       return 0; // to stop compiler warnings
     }

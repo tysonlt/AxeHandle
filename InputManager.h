@@ -7,12 +7,17 @@
 #include "Hardware.h"
 #include "Leds.h"
 
+// #define TESTING_SETUP
+
 enum LayoutType {
+  PedalsAndScenes,
+  ScenesAndMidi,
   Pedals,
+  Presets,
   Scenes,
-	// Midi,
-  //Looper,
-  //KitchenSink,
+  User,
+	Midi,
+  Looper,
   __NUM_LAYOUT_TYPES
 };
 
@@ -24,25 +29,29 @@ class InputManager {
 
   public:
 
+    void checkSetupMode();
+
     void init(AxeSystem& axe, Leds& leds, Screen& screen);
     bool update();
     void nextLayout();
     
     void setLayoutType(LayoutType layout);
     LayoutType getLayoutType() { return _layoutType; }
-		LayoutInterface* getLayout() { return _layouts[_layoutType]; }
+		LayoutInterface* getLayout();
 
     void registerLayoutChangeCallback(LayoutChangeCallback func) { _layoutChangeCallback = func; }
     void callLayoutChangeCallback();
 
   private:
 
+    bool _setupMode = false;
     AxeSystem *_axe = nullptr;
     Leds *_leds = nullptr;
     Button _buttons[NUM_BUTTONS];
     Multiplexer _mux;
     LayoutType _layoutType;
-    LayoutInterface *_layouts[__NUM_LAYOUT_TYPES];
+    LayoutInterface *_layouts[__NUM_LAYOUT_TYPES] = {};
     LayoutChangeCallback _layoutChangeCallback = NULL;
+    LayoutInterface *_layoutSetup = nullptr;
 
 };
