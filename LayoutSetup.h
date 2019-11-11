@@ -5,6 +5,9 @@
 #include <SC_Button.h>
 #include "LayoutUser.h"
 
+//save custom button assignments to EEPROM
+//use with LayoutUser to recall the button actions
+//WIP
 class LayoutSetup : public LayoutInterface {
 
   friend class InputManager;

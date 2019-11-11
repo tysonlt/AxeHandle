@@ -9,6 +9,7 @@
 
 // #define TESTING_SETUP
 
+//this is all the available layouts, don't have to use them all
 enum LayoutType {
   PedalsAndScenes,
   ScenesAndMidi,

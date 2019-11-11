@@ -20,6 +20,8 @@ public:
   virtual const char *getName() = 0;
   virtual void reset() = 0;
 
+  //read the given button
+  //note that TAP and TUNER are hard-coded
   virtual bool read(const byte index, Button &button) {
     
       if (index == BUTTON_INDEX_TAP) {
