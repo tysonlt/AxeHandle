@@ -2,6 +2,8 @@
 
 #include <Arduino.h>
 
+//generic LED interface
+//current impl uses ShiftPWM
 class Leds {
 
 public:

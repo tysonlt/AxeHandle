@@ -35,6 +35,8 @@ struct ButtonAssignment {
   u_int8_t data2; //cc value
 };
 
+//use with LayoutSetup
+//WIP
 class LayoutSetup;
 class LayoutUser : public LayoutInterface {
 

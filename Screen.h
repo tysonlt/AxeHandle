@@ -34,6 +34,8 @@ enum ElementPosition {
   SETUP
 };
 
+//intended as a generic screen interface, with implementation details in the class
+//in practice it is hardcoded to an ST7735 screen, but should be easy to modify
 class Screen {
 
 public:

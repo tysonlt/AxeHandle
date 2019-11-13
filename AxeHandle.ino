@@ -48,9 +48,13 @@ void onTapTempo() {
   timer.after(TAP_TEMPO_LED_DURATION, turnOffTapTempoLed);
 }
 
-void turnOffTapTempoLed() { leds.off(Leds::TAP_TEMPO_LED); }
+void turnOffTapTempoLed() { 
+  leds.off(Leds::TAP_TEMPO_LED); 
+}
 
-void onLayoutChange(LayoutInterface *layout) { screen.displayLayout(layout); }
+void onLayoutChange(LayoutInterface *layout) { 
+  screen.displayLayout(layout); 
+}
 
 void onPresetChange(AxePreset preset) {
   input.getLayout()->reset();

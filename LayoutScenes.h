@@ -12,7 +12,7 @@ public:
 
   void reset() { 
     turnOnSceneLed(_axe->getCurrentPreset().getSceneNumber()); 
-    }
+  }
 
 protected:
   enum Buttons {
